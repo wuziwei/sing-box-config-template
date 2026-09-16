@@ -1,6 +1,6 @@
 # sing-box-config-template
 **Server:** hy2 templaye
-**Client** 
+**Client** hy2 template
  1. sing-box 1.14
      -  DNS race
      -  Fake ip
