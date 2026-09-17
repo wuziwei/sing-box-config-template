@@ -8,7 +8,7 @@
      -  ipv4&v6
      -  Ad block
      -  Webrtc leak protect
-     -  tailscale ( if you don't need , delect the DNS/route rule / endpoint config
+     -  tailscale ( if you don't need , delect the DNS/route rule / endpoint config)
      -  Sing-box api & clash api
    
  2. sing-box 1.15 
