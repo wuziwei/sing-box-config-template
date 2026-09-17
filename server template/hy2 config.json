@@ -4,6 +4,24 @@
     "level": "info",
     "timestamp": true
   },
+  "services": [
+    {
+      "type": "derp",
+      "listen": "::",
+      "listen_port": 443,
+      "config_path": "/var/lib/sing-box/derp.key",
+      "stun": {
+        "enabled": true,
+        "listen_port": 3478
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "input your domain",
+        "certificate_path": "input your certificate path",
+        "key_path": "input your key path"
+      }
+    }
+  ],
   "route": {
     "auto_detect_interface": true,
     "rules": [
