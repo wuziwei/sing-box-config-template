@@ -22,7 +22,7 @@
      -  tailscale(on demand)
      -  Sing-box api & clash api
    
- 3. sing-box 1.15 bridge ( for mac/linux/root android) iPhone not support only when jail break
+ 3. sing-box 1.15 bridge ( for mac/linux/root android) iPhone support only when jail break
      -  DNS race
      -  Fake ip
      -  ipv4&v6
