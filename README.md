@@ -1,5 +1,7 @@
 # sing-box-config-template
-**Server:** hy2 template
+**Server:** 
+ - hy2 template
+ - Tailscale DERP 
 
 **Client** hy2 template
  1. sing-box 1.14
