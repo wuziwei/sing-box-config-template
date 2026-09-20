@@ -157,8 +157,11 @@
       ],
       "auto_route": true,            // 自动配置系统路由表接管默认网关
       "strict_route": false,         // 非严格路由，允许与其他 VPN/网络工具共存
-      "endpoint_independent_nat": true, // 开启 Full Cone NAT（端点无关型 NAT），利于 P2P 穿透
-      "mtu": 1500                    // 虚拟网卡 MTU
+      "mtu": 1500,                    // 虚拟网卡 MTU
+      "udp_timeout": "5m",
+      "udp_mapping": "endpoint_independent",
+      "udp_filtering": "endpoint_independent",
+      "udp_nat_max": 0
     },
     // 混合代理入站：同时监听 IPv6/IPv4 的 7890 端口，兼容 HTTP(S) 与 SOCKS5
     {
