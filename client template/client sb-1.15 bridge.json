@@ -120,7 +120,9 @@
       "auto_route": true,
       "strict_route": false,
       "endpoint_independent_nat": true,
-      "mtu": 1500
+      "mtu": 1500,
+      "udp_timeout": "5m0s",
+      "udp_nat_max": 4096
     },
     {
       "type": "mixed",
