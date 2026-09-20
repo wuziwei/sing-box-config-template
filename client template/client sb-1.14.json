@@ -270,6 +270,8 @@
       "strict_route": true,
       "endpoint_independent_nat": true,
       "mtu": 1500,
+      "udp_timeout": "5m0s",
+      "udp_nat_max": 4096,
       "platform": {
         "http_proxy": {
           "enabled": true,
