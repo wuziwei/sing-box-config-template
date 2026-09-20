@@ -145,6 +145,18 @@
         "action": "hijack-dns"
       },
       {
+        "action": "route-options",
+        "udp_disable_domain_unmapping": true,
+        "udp_connect": true
+      },
+      {
+        "protocol": "icmp",
+        "preferred_by": "bridge",
+        "action": "route",
+        "outbound": "bridge"
+      },
+      { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
+      {
         "type": "logical",
         "mode": "and",
         "rules": [
