@@ -148,11 +148,6 @@
         "action": "hijack-dns"
       },
       {
-        "action": "route-options",
-        "udp_disable_domain_unmapping": true,
-        "udp_connect": true
-      },
-      {
         "protocol": "icmp",
         "action": "route",
         "outbound": "direct"
