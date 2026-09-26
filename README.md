@@ -2,6 +2,7 @@
 **Server:** 
  - hy2 template
  - Tailscale DERP 
+ - ACME证书（域名在CF配置示例）
 
 **Client** hy2 template
  1. sing-box 1.14
