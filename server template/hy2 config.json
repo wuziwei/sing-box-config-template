@@ -1,9 +1,27 @@
 {
   "log": {
-    "disabled": "warn",
-    "level": "info",
+    "disabled": false,
+    "level": "warn",
     "timestamp": true
   },
+  "certificate_providers": [
+    {
+      "type": "acme",
+      "tag": "任意命名：比如a1",
+      "domain": [
+        "你的域名"
+      ],
+      "data_directory": "/var/lib/sing-box/acme",
+      "default_server_name": "你的域名",
+      "email": "你的CF登录邮箱",
+      "provider": "letsencrypt",
+      "key_type": "p256",
+      "dns01_challenge": {
+        "provider": "cloudflare",
+        "api_token": "你的CF api token"
+      }
+    }
+  ],
   "services": [
     {
       "type": "derp",
@@ -16,9 +34,8 @@
       },
       "tls": {
         "enabled": true,
-        "server_name": "input your domain",
-        "certificate_path": "input your certificate path",
-        "key_path": "input your key path"
+        "server_name": "你的域名",
+        "certificate_provider": "上面acmetag的任意命名a1"
       }
     }
   ],
@@ -51,13 +68,13 @@
       "listen_port": 2053,
       "users": [
         {
-          "name": "input your name",
-          "password": "input your pw"
+          "name": "任意名字",
+          "password": "输入你的密码"
         }
       ],
       "obfs": {
           "type": "salamander",
-          "password": "input any pw "
+          "password": "输入你的密码"
       },
       "masquerade": {
           "type": "proxy",
@@ -66,12 +83,11 @@
       },
       "tls": {
         "enabled": true,
-        "server_name": "input your domain",
+        "server_name": "你的域名",
         "alpn": [
           "h3"
         ],
-        "certificate_path": "input your certificate path",
-        "key_path": "input your key path"
+        "certificate_provider": "上面acme tag的任意命名a1"
       }
     }
   ]
