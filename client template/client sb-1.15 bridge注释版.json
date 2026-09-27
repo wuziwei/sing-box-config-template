@@ -53,12 +53,6 @@
         "server": "doh.pub",
         "domain_resolver": "hosts"
       },
-      // Tailscale 专网 DNS：挂载至内置的 Tailscale 端点
-      {
-        "type": "tailscale",
-        "tag": "ts",
-        "endpoint": "ts-ep"
-      },
       // Fake-IP 虚拟池：用于捕获海外流量，免除本地远程解析延迟
       {
         "tag": "fakeip",
@@ -91,12 +85,6 @@
         "query_type": ["SVCB", "HTTPS"],
         "action": "predefined",
         "rcode": "NOERROR"
-      },
-      // Tailscale 推荐解析处理
-      {
-        "preferred_by": "ts",
-        "action": "route",
-        "server": "ts"
       },
       // 国内白名单域名（苹果国内、微软国内、国内游戏、CN域名）双路并发预评估 (Evaluate)
       {
