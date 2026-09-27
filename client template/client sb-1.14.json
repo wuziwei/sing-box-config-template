@@ -36,11 +36,6 @@
         "domain_resolver": "hosts"
       },
       {
-        "type": "tailscale",
-        "tag": "ts",
-        "endpoint": "ts-ep"
-      },
-      {
         "tag": "fakeip",
         "type": "fakeip",
         "inet4_range": "198.18.0.0/15",
@@ -67,11 +62,6 @@
         "query_type": ["SVCB","HTTPS"],
         "action": "predefined",
         "rcode": "NOERROR"
-      },
-      {
-        "preferred_by": "ts",
-        "action": "route",
-        "server": "ts"
       },
       {
         "rule_set": ["apple@cn","microsoft@cn","category-games@cn","cn"],
