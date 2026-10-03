@@ -207,6 +207,15 @@
         "action": "route",
         "outbound": "bridge"
       },
+      {
+        "domain_suffix": [
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com"
+        ],
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
       // 8. 命中中国大陆 IP 规则库的流量走 Bridge 直连
       {
         "inbound": "tun-in",
