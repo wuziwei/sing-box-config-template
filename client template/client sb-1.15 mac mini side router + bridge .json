@@ -183,6 +183,15 @@
         "outbound": "bridge"
       },
       {
+        "domain_suffix": [
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com"
+        ],
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
+      {
         "inbound": "tun-in",
         "rule_set": "cn_ip",
         "preferred_by": "bridge",
