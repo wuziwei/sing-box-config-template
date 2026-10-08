@@ -124,24 +124,7 @@
   ],
   "route": {
     "rules": [
-      {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "port": 53
-          },
-          {
-            "protocol": "dns"
-          }
-        ],
-        "action": "hijack-dns"
-      },
-      {
-        "protocol": "icmp",
-        "action": "route",
-        "outbound": "direct"
-      },
+      { "port": 53, "action": "hijack-dns" },
       { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
       {
         "type": "logical",
@@ -157,14 +140,10 @@
        "action": "reject",
        "no_drop": true
       },
-      {"protocol": "ntp","action": "route","outbound": "direct"},
-      {
-       "ip_cidr": [ "100.64.0.0/10","fd7a:115c:a1e0::/48"],
-       "action": "route",
-       "outbound": "ts-ep"
-      },
+      {"network": "icmp", "action": "resolve" },
+      {"network": "icmp", "action": "route", "outbound": "direct" },
       {"ip_is_private": true,"action": "route","outbound": "direct"},
-      {"port": 993,"rule_set": "cnip","action": "reject"}, 
+      {"port": 993,"rule_set": "cnip","action": "reject"},  
       {
         "inbound": "tun-in",
         "process_name": ["Motrix", "aria2c"],
@@ -196,8 +175,10 @@
         "action": "sniff",
         "timeout": "100ms"
       },
+      { "protocol": "dns", "action": "hijack-dns" },
       {"clash_mode": "Global","action": "route","outbound": "✈️proxy"},
       {"clash_mode": "Direct","action": "route","outbound": "direct"},
+      {"protocol": "ntp","action": "route","outbound": "direct"},
       {
         "rule_set": ["adblock","BlockHttpDNS"],
         "action": "reject",
