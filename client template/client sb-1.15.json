@@ -64,13 +64,13 @@
         "rcode": "NOERROR"
       },
       {
-        "rule_set": ["apple@cn","microsoft@cn","category-games@cn","cn"],
+        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "evaluate",
         "server": "ali",
         "tag": "ali-res"
       },
       {
-        "rule_set": ["apple@cn","microsoft@cn","category-games@cn","cn"],
+        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "evaluate",
         "server": "pub",
         "tag": "pub-res"
@@ -164,7 +164,7 @@
        "outbound": "ts-ep"
       },
       {"ip_is_private": true,"action": "route","outbound": "direct"},
-      {"port": 993,"rule_set": "cn_ip","action": "reject"}, 
+      {"port": 993,"rule_set": "cnip","action": "reject"}, 
       {
         "inbound": "tun-in",
         "process_name": ["Motrix", "aria2c"],
@@ -181,11 +181,18 @@
       },
       {
         "inbound": "tun-in",
-        "rule_set": "cn_ip",
+        "rule_set": "cnip",
         "action": "route",
         "outbound": "direct"
       },
       {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {"domain_suffix": "push.apple.com"},
+          {"rule_set": "telegramip"}
+        ],
+        "invert": true,
         "action": "sniff",
         "timeout": "100ms"
       },
@@ -197,20 +204,9 @@
         "no_drop": true
       },
       {
-        "rule_set": ["apple@cn","microsoft@cn","category-games@cn","cn"],
+        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
-      },
-      {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-           { "protocol": ["quic", "stun"] },
-           { "network": "udp", "port": 443 },
-           { "port": [3478, 5349, 19302, 19303, 19304, 19305, 19306, 19307, 19308, 19309] }
-        ],
-        "action": "reject",
-        "no_drop": true
       },
       {
         "rule_set": "spotify",
@@ -218,12 +214,7 @@
         "outbound": "🎶Spotify"
       },
       {
-        "rule_set": ["youtube","netflix"],
-        "action": "route",
-        "outbound": "🎬Media"
-      },
-      {
-        "rule_set": ["telegram","telegram_ip"],
+        "rule_set": ["youtube","netflix","telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
       }
@@ -242,28 +233,14 @@
       },
       {
         "type": "remote",
-        "tag": ["apple@cn","microsoft@cn","category-games@cn","cn","telegram","youtube","netflix","spotify"],
-        "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/{tag}.srs",
+        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","telegramip","youtube","netflix","spotify"],
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
         "tag": "adblock",
-        "url": "https://cdn.jsdelivr.net/gh/217heidai/adblockfilters@main/rules/adblocksingbox.srs",
-        "update_interval": "48h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "telegram_ip",
-        "format": "binary",
-        "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/telegram.srs",
-        "update_interval": "48h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "cn_ip",
-        "format": "binary",
-        "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
+        "url": "https://cdn.jsdelivr.net/gh/217heidai/adblockfilters@main/rules/adblocksingboxlite.srs",
         "update_interval": "48h0m0s"
       }
     ]
@@ -290,23 +267,28 @@
       "type": "selector",
       "outbounds": [
         "⚡️Latency(🇯🇵/🇰🇷)",
-        "🚀Bandwidth(🇺🇸/🇨🇦)",
         "🇯🇵JP1-hy2",
         "🇯🇵JP2-hy2",
+        "🇯🇵JP3-hy2",
         "🇺🇸US1-hy2",
         "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
         "🇨🇦CA1-hy2",
         "🇨🇦CA2-hy2",
         "🇰🇷SK1-hy2",
         "🇰🇷SK2-hy2",
+        "🇰🇷SK3-hy2",
         "🇯🇵JP1-hy2-v6",
         "🇯🇵JP2-hy2-v6",
+        "🇯🇵JP3-hy2-v6",
         "🇺🇸US1-hy2-v6",
         "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6",
         "🇨🇦CA1-hy2-v6",
         "🇨🇦CA2-hy2-v6",
         "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6"
+        "🇰🇷SK2-hy2-v6",
+        "🇰🇷SK3-hy2-v6"
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
@@ -317,66 +299,44 @@
         "direct",
         "🇯🇵JP1-hy2",
         "🇯🇵JP2-hy2",
+        "🇯🇵JP3-hy2",
         "🇺🇸US1-hy2",
         "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
         "🇨🇦CA1-hy2",
         "🇨🇦CA2-hy2",
         "🇰🇷SK1-hy2",
         "🇰🇷SK2-hy2",
+        "🇰🇷SK3-hy2",
         "🇯🇵JP1-hy2-v6",
         "🇯🇵JP2-hy2-v6",
+        "🇯🇵JP3-hy2-v6",
         "🇺🇸US1-hy2-v6",
         "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6",
         "🇨🇦CA1-hy2-v6",
         "🇨🇦CA2-hy2-v6",
         "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6"
+        "🇰🇷SK2-hy2-v6",
+        "🇰🇷SK3-hy2-v6"
       ],
-      "default": "🇯🇵JP1-hy2"
-    },
-    {
-      "tag": "🎬Media",
-      "type": "selector",
-      "outbounds": [
-        "⚡️Latency(🇯🇵/🇰🇷)",
-        "🚀Bandwidth(🇺🇸/🇨🇦)"
-      ],
-      "default": "🚀Bandwidth(🇺🇸/🇨🇦)"
+      "default": "🇯🇵JP3-hy2"
     },
     {
       "tag": "⚡️Latency(🇯🇵/🇰🇷)",
       "type": "urltest",
       "outbounds": [
-        "🇯🇵JP1-hy2",
-        "🇯🇵JP2-hy2",
-        "🇰🇷SK1-hy2",
-        "🇰🇷SK2-hy2",
-        "🇯🇵JP1-hy2-v6",
-        "🇯🇵JP2-hy2-v6",
-        "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6"
-      ],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "3m",
-      "tolerance": 25,
-      "interrupt_exist_connections": true
-    },
-    {
-      "tag": "🚀Bandwidth(🇺🇸/🇨🇦)",
-      "type": "urltest",
-      "outbounds": [
+        "🇯🇵JP3-hy2",
+        "🇯🇵JP3-hy2-v6",
         "🇺🇸US1-hy2",
-        "🇺🇸US2-hy2",
-        "🇨🇦CA1-hy2",
-        "🇨🇦CA2-hy2",
         "🇺🇸US1-hy2-v6",
-        "🇺🇸US2-hy2-v6",
-        "🇨🇦CA1-hy2-v6",
-        "🇨🇦CA2-hy2-v6"
+        "🇰🇷SK3-hy2",
+        "🇰🇷SK3-hy2-v6"
       ],
       "url": "https://www.gstatic.com/generate_204",
       "interval": "3m",
       "tolerance": 25,
+      "idle_timeout": "20m0s",
       "interrupt_exist_connections": true
     },
     {
@@ -384,7 +344,6 @@
       "type": "selector",
       "outbounds": [
         "⚡️Latency(🇯🇵/🇰🇷)",
-        "🚀Bandwidth(🇺🇸/🇨🇦)",
         "direct"
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
@@ -394,23 +353,28 @@
       "type": "selector",
       "outbounds": [
         "⚡️Latency(🇯🇵/🇰🇷)",
-        "🚀Bandwidth(🇺🇸/🇨🇦)",
         "🇯🇵JP1-hy2",
         "🇯🇵JP2-hy2",
+        "🇯🇵JP3-hy2",
         "🇺🇸US1-hy2",
         "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
         "🇨🇦CA1-hy2",
         "🇨🇦CA2-hy2",
         "🇰🇷SK1-hy2",
         "🇰🇷SK2-hy2",
+        "🇰🇷SK3-hy2",
         "🇯🇵JP1-hy2-v6",
         "🇯🇵JP2-hy2-v6",
+        "🇯🇵JP3-hy2-v6",
         "🇺🇸US1-hy2-v6",
         "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6",
         "🇨🇦CA1-hy2-v6",
         "🇨🇦CA2-hy2-v6",
         "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6"
+        "🇰🇷SK2-hy2-v6",
+        "🇰🇷SK3-hy2-v6"
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
