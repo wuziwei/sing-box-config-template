@@ -166,6 +166,8 @@
     "rules": [
       // 1. DNS 劫持：拦截入站的 53 端口，强制注入 sing-box 内部 DNS 引擎
       { "port": 53, "action": "hijack-dns" },
+      // 修复 ICMP / Ping 还原
+      {"network": "icmp", "action": "resolve" },
       // 2. IPv6 防泄漏与黑洞：如果物理网卡没有公网 IPv6 (2000::/3)，则拦截除 Fake-IP 以外的 IPv6 连接
       {
         "type": "logical",
@@ -184,8 +186,6 @@
         "action": "route",
         "outbound": "ts-ep"
       },
-      // 修复 ICMP / Ping 还原
-      {"network": "icmp", "action": "resolve" },
       {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
       // 5. 局域网私有 IP 直连
       { "ip_is_private": true, "action": "route", "outbound": "direct" },
