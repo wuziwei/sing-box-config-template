@@ -125,6 +125,7 @@
   "route": {
     "rules": [
       { "port": 53, "action": "hijack-dns" },
+      { "network": "icmp", "action": "resolve" },
       { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
       {
         "type": "logical",
@@ -140,7 +141,6 @@
        "action": "reject",
        "no_drop": true
       },
-      {"network": "icmp", "action": "resolve" },
       {"network": "icmp", "action": "route", "outbound": "direct" },
       {"ip_is_private": true,"action": "route","outbound": "direct"},
       {"port": 993,"rule_set": "cnip","action": "reject"},  
