@@ -173,7 +173,7 @@
        "outbound": "ts-ep"
       },
       {"ip_is_private": true,"action": "route","outbound": "direct"},
-      {"port": 993,"rule_set": "cn_ip","action": "reject"}, 
+      {"port": 993,"rule_set": "cnip","action": "reject"}, 
       {
         "inbound": "tun-in",
         "preferred_by": "bridge",
@@ -191,7 +191,7 @@
       },
       {
         "inbound": "tun-in",
-        "rule_set": "cn_ip",
+        "rule_set": "cnip",
         "preferred_by": "bridge",
         "action": "route",
         "outbound": "bridge"
