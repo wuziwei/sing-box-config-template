@@ -164,16 +164,8 @@
   // ==========================================
   "route": {
     "rules": [
-      // 1. DNS 劫持：拦截入站的 53 端口与 DNS 协议流量，强制注入 sing-box 内部 DNS 引擎
-      {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          { "port": 53 },
-          { "protocol": "dns" }
-        ],
-        "action": "hijack-dns"
-      },
+      // 1. DNS 劫持：拦截入站的 53 端口，强制注入 sing-box 内部 DNS 引擎
+      { "port": 53, "action": "hijack-dns" },
       // 2. IPv6 防泄漏与黑洞：如果物理网卡没有公网 IPv6 (2000::/3)，则拦截除 Fake-IP 以外的 IPv6 连接
       {
         "type": "logical",
@@ -186,14 +178,15 @@
         "action": "reject",
         "no_drop": true
       },
-      // 3. NTP 网络对时直连
-      { "protocol": "ntp", "action": "route", "outbound": "direct" },
       // 4. Tailscale 内网地址段（CGNAT 段 100.64.0.0/10 及 ULA IPv6 段）路由至 Tailscale 端点
       {
         "ip_cidr": ["100.64.0.0/10", "fd7a:115c:a1e0::/48"],
         "action": "route",
         "outbound": "ts-ep"
       },
+      // 修复 ICMP / Ping 还原
+      {"network": "icmp", "action": "resolve" },
+      {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
       // 5. 局域网私有 IP 直连
       { "ip_is_private": true, "action": "route", "outbound": "direct" },
       // 6. 邮件安全策略：拦截国内 IP 上的 IMAPS 993 端口
@@ -235,9 +228,13 @@
         "action": "sniff",
         "timeout": "100ms"
       },
+      // DNS 劫持：拦截入站的 dns protocal，强制注入 sing-box 内部 DNS 引擎
+      { "protocol": "dns", "action": "hijack-dns" },
       // 10. Clash 模式路由覆盖
       { "clash_mode": "Global", "action": "route", "outbound": "✈️proxy" },
       { "clash_mode": "Direct", "action": "route", "outbound": "direct" },
+      // NTP 网络对时直连
+      { "protocol": "ntp", "action": "route", "outbound": "direct" },
       // 11. 阻断广告与 HTTPDNS 流量
       {
         "rule_set": ["adblock", "BlockHttpDNS"],
