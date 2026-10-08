@@ -14,7 +14,7 @@
      -  tailscale ( if you don't need , delect the DNS/route rule / endpoint config)
      -  Sing-box api & clash api
    
- 2. sing-box 1.15 
+ 2. sing-box 1.15 direct
      -  DNS race
      -  国内realip，国外Fake ip
      -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
