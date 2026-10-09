@@ -1,10 +1,10 @@
 # sing-box-config-template
-**Server:** 
+**Server服务端配置:** 
  - hy2 template
  - Tailscale DERP 
  - ACME证书（域名在CF配置示例）
 
-**Client** hy2 template
+**Client客户端配置** hy2 template
  1. sing-box 1.14
      -  DNS race
      -  国内realip，国外Fake ip
