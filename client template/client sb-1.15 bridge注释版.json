@@ -355,6 +355,19 @@
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
+    {
+      "tag": "🔗Meta",
+      "type": "selector",
+      "outbounds": [
+        "🇺🇸US1-hy2",
+        "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
+        "🇺🇸US1-hy2-v6",
+        "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6"
+      ],
+      "default":  "🇺🇸US1-hy2"
+    },
     // Spotify 专项代理策略组
     {
       "tag": "🎶Spotify",
