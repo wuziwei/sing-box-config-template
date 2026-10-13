@@ -6,8 +6,9 @@
 
 **Client客户端配置** hy2 template
  1. sing-box 1.14
-     -  DNS race
-     -  国内realip，国外Fake ip
+     -  国内realip，国外Fake ip （fakeipfilter）
+     -  小众域名精准分流
+     -  增加meta规则集（muse ai，facebook，whatsapp，instagram，facebook）
      -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
      -  Ad block（广告拦截）
      -  Webrtc leak protect（webrtc拦截防止ip泄漏）
@@ -15,8 +16,9 @@
      -  Sing-box api & clash api
    
  2. sing-box 1.15 direct
-     -  DNS race
-     -  国内realip，国外Fake ip
+     -  国内realip，国外Fake ip （fakeipfilter）
+     -  小众域名精准分流
+     -  增加meta规则集（muse ai，facebook，whatsapp，instagram，facebook）
      -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
      -  Ad block（广告拦截）
      -  Webrtc leak protect（webrtc拦截防止ip泄漏）
@@ -24,8 +26,9 @@
      -  Sing-box api & clash api
    
  3. sing-box 1.15 bridge ( for mac/linux/root android) iPhone support only when jail break
-     -  DNS race
-     -  国内realip，国外Fake ip
+     -  国内realip，国外Fake ip （fakeipfilter）
+     -  小众域名精准分流
+     -  增加meta规则集（muse ai，facebook，whatsapp，instagram，facebook）
      -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
      -  Ad block（广告拦截）
      -  Webrtc leak protect（webrtc拦截防止ip泄漏）
@@ -33,8 +36,9 @@
      -  Sing-box api & clash api
    
  4. sing-box 1.15 mac mini side router 
-     -  DNS race
-     -  国内realip，国外Fake ip
+     -  国内realip，国外Fake ip （fakeipfilter）
+     -  小众域名精准分流
+     -  增加meta规则集（muse ai，facebook，whatsapp，instagram，facebook）
      -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
      -  Ad block（广告拦截）
      -  Webrtc leak protect（webrtc拦截防止ip泄漏）
