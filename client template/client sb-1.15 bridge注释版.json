@@ -116,6 +116,14 @@
         "action": "route",
         "server": "google"
       },
+      // 海外全量域名规则集直接分配 Fake-IP，确保海外流量毫秒级秒开建连
+      {
+        "rule_set": "proxy",
+        "query_type": ["A", "AAAA"],
+        "action": "route",
+        "server": "fakeip",
+        "rewrite_ttl": 1
+      },
       // 剩余未命中国内白名单的 A/AAAA 记录，全部直接分配 Fake-IP，TTL 设为 1s 便于即时刷新
       {
         "query_type": ["A", "AAAA"],
@@ -283,6 +291,12 @@
         "action": "route",
         "outbound": "✈️proxy"
       },
+      // 海外全量域名直奔代理出站，拦截在 resolve 之前，避免海外流量产生 DNS 泄露与二次解析开销
+      {
+        "rule_set": "proxy",
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
       // 15. ⭐ 漏网 Fake-IP 解析与二次判定 (Post-Resolve CNIP)
       // 针对所有未被上述域名规则捕获的 Fake-IP 未知连接，在路由层执行真实 IP 解析
       {
@@ -328,7 +342,7 @@
       },
       {
         "type": "remote",
-        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","telegramip","youtube","netflix","spotify"],
+        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","telegramip","youtube","netflix","spotify","proxy"],
         "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
