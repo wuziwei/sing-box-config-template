@@ -40,7 +40,6 @@
       { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"}, 
       { "clash_mode": "Direct","action": "route","server": "ali"},
       { "clash_mode": "Global","query_type": ["A", "AAAA"],"action": "route","server": "fakeip","rewrite_ttl": 1},
-      { "domain_suffix": ["444556.xyz"],"action": "route","server": "ali"},
       {
         "rule_set": ["fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
@@ -134,8 +133,7 @@
         "process_name": ["Motrix", "aria2c"],
         "action": "route",
         "outbound": "bridge"
-      }, 
-      { "domain_suffix": ["444556.xyz"],"action": "route","outbound": "direct"},
+      },
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
       { "inbound": "tun-in","rule_set": "cnip","action": "route","preferred_by": "bridge","outbound": "bridge"},
       {
