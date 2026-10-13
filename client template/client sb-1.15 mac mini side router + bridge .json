@@ -356,6 +356,20 @@
         ],
         "action": "route",
         "outbound": "✈️proxy"
+      },
+      {
+        "inbound": "tun-in",
+        "ip_cidr": [
+          "198.18.0.0/15"
+        ],
+        "action": "resolve"
+      },
+      {
+        "inbound": "tun-in",
+        "rule_set": "cnip",
+        "preferred_by": "bridge",
+        "action": "route",
+        "outbound": "bridge"
       }
     ],
     "auto_detect_interface": true,
