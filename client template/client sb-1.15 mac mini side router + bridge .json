@@ -2,7 +2,7 @@
   "$schema": "https://sing-box.sagernet.org/schema.json",
   "log": {
     "disabled": false,
-    "level": "info",
+    "level": "warn",
     "timestamp": true
   },
   "dns": {
@@ -11,24 +11,8 @@
         "type": "hosts",
         "tag": "hosts",
         "predefined": {
-          "dns.alidns.com": [
-            "223.5.5.5",
-            "223.6.6.6",
-            "2400:3200::1",
-            "2400:3200:baba::1"
-          ],
-          "doh.pub": [
-            "1.12.12.12",
-            "120.53.53.53",
-            "2402:4e00::",
-            "2402:4e00:1::"
-          ],
-          "dns.google": [
-            "8.8.8.8",
-            "8.8.4.4",
-            "2001:4860:4860::8888",
-            "2001:4860:4860::8844"
-          ]
+          "dns.alidns.com": ["223.5.5.5","223.6.6.6","2400:3200::1","2400:3200:baba::1"],
+          "dns.google": ["8.8.8.8","8.8.4.4","2001:4860:4860::8888","2001:4860:4860::8844"]
         }
       },
       {
@@ -45,113 +29,38 @@
         "domain_resolver": "hosts"
       },
       {
-        "tag": "pub",
-        "type": "https",
-        "server": "doh.pub",
-        "domain_resolver": "hosts"
-      },
-      {
         "tag": "fakeip",
         "type": "fakeip",
         "inet4_range": "198.18.0.0/15",
         "inet6_range": "fc00::/18"
       }
     ],
-    "rules": [
+    "rules": [ 
+      { "rule_set": ["adblock","BlockHttpDNS"],"action": "predefined","rcode": "NXDOMAIN" },
+      { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"}, 
+      { "clash_mode": "Direct","action": "route","server": "ali"},
+      { "clash_mode": "Global","query_type": ["A", "AAAA"],"action": "route","server": "fakeip","rewrite_ttl": 1},
+      { "domain_suffix": ["444556.xyz"],"action": "route","server": "ali"},
       {
-        "clash_mode": "Direct",
+        "rule_set": ["fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "server": "ali"
       },
+      { "rule_set": "fakeipfilter-!cn","action": "route","server": "google"},
+      { "rule_set": "proxy", "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 },
       {
-        "clash_mode": "Global",
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "action": "route",
-        "server": "fakeip",
-        "rewrite_ttl": 1
-      },
-      {
-        "rule_set": [
-          "adblock",
-          "BlockHttpDNS"
-        ],
-        "action": "predefined",
-        "rcode": "NXDOMAIN"
-      },
-      {
-        "query_type": [
-          "SVCB",
-          "HTTPS"
-        ],
-        "action": "predefined",
-        "rcode": "NOERROR"
-      },
-      {
-        "rule_set": [
-          "apple-cn",
-          "microsoft-cn",
-          "games-cn",
-          "cn"
-        ],
+        "query_type": ["A", "AAAA"],
         "action": "evaluate",
-        "server": "ali",
-        "tag": "ali-res"
+        "server": "google",
+        "client_subnet": "223.5.5.0/24",
+        "timeout": "1s"
       },
-      {
-        "rule_set": [
-          "apple-cn",
-          "microsoft-cn",
-          "games-cn",
-          "cn"
-        ],
-        "action": "evaluate",
-        "server": "pub",
-        "tag": "pub-res"
-      },
-      {
-        "match_response": "ali-res",
-        "action": "respond",
-        "race": true
-      },
-      {
-        "match_response": "pub-res",
-        "action": "respond",
-        "race": true
-      },
-      {
-        "rule_set": "fakeipfilter-cn",
-        "action": "route",
-        "server": "ali"
-      },
-      {
-        "rule_set": "fakeipfilter-!cn",
-        "action": "route",
-        "server": "google"
-      },
-      {
-        "rule_set": "proxy",
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "action": "route",
-        "server": "fakeip",
-        "rewrite_ttl": 1
-      },
-      {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "action": "route",
-        "server": "fakeip",
-        "rewrite_ttl": 1
-      }
+      { "match_response": true, "rule_set": "cnip", "server": "ali" },
+      { "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 }
     ],
     "final": "google",
+    "reverse_mapping": true,
+    "timeout": "10s",
     "cache_capacity": 16384,
     "optimistic": {
       "enabled": true,
@@ -174,12 +83,9 @@
         "172.19.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
+      "loopback_address": ["10.7.0.1"],
       "auto_route": true,
-      "strict_route": false,
-      "udp_timeout": "5m",
-      "udp_mapping": "endpoint_independent",
-      "udp_filtering": "endpoint_independent",
-      "udp_nat_max": 0
+      "strict_route": true
     },
     {
       "type": "direct",
@@ -196,141 +102,60 @@
   ],
   "route": {
     "rules": [
-      {
-        "port": 53,
-        "action": "hijack-dns"
-      },
-      {
-        "network": "icmp",
-        "action": "resolve"
-      },
-      {
-        "ip_cidr": [
-          "0.0.0.0/8"
-        ],
-        "action": "reject"
-      },
+      { "port": 53, "action": "hijack-dns" },
+      { "network": "icmp", "action": "resolve" },
+      { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
+      { "ip_cidr": ["10.7.0.1/32"],"action": "route","outbound": "direct"},
       {
         "type": "logical",
         "mode": "and",
         "rules": [
+          {"ip_version": 6},
+          { "ip_cidr": ["fc00::/18"], "invert": true },
           {
-            "ip_version": 6
-          },
-          {
-            "ip_cidr": [
-              "fc00::/18"
-            ],
-            "invert": true
-          },
-          {
-            "default_interface_address": [
-              "2000::/3"
-            ],
+            "default_interface_address": ["2000::/3"],
             "invert": true
           }
         ],
-        "action": "reject",
-        "no_drop": true
+       "action": "reject",
+       "no_drop": true
       },
       {
-        "ip_cidr": [
-          "100.64.0.0/10",
-          "fd7a:115c:a1e0::/48"
-        ],
-        "action": "route",
-        "outbound": "ts-ep"
+       "ip_cidr": [ "100.64.0.0/10","fd7a:115c:a1e0::/48"],
+       "action": "route",
+       "outbound": "ts-ep"
       },
-      {
-        "network": "icmp",
-        "action": "route",
-        "preferred_by": "bridge",
-        "outbound": "bridge"
-      },
-      {
-        "ip_is_private": true,
-        "action": "route",
-        "outbound": "direct"
-      },
-      {
-        "port": 993,
-        "rule_set": "cnip",
-        "action": "reject"
-      },
+      {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
+      {"ip_is_private": true,"action": "route","outbound": "direct"},
+      {"port": 993,"rule_set": "cnip","action": "reject"}, 
       {
         "inbound": "tun-in",
         "preferred_by": "bridge",
-        "process_name": [
-          "Motrix",
-          "aria2c"
-        ],
+        "process_name": ["Motrix", "aria2c"],
         "action": "route",
         "outbound": "bridge"
-      },
-      {
-        "domain_suffix": [
-          "googleapis.cn",
-          "xn--ngstr-lra8j.com"
-        ],
-        "action": "route",
-        "outbound": "✈️proxy"
-      },
-      {
-        "inbound": "tun-in",
-        "rule_set": "cnip",
-        "preferred_by": "bridge",
-        "action": "route",
-        "outbound": "bridge"
-      },
+      }, 
+      { "domain_suffix": ["444556.xyz"],"action": "route","outbound": "direct"},
+      { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
+      { "inbound": "tun-in","rule_set": "cnip","action": "route","preferred_by": "bridge","outbound": "bridge"},
       {
         "type": "logical",
         "mode": "or",
         "rules": [
-          {
-            "domain_suffix": "push.apple.com"
-          },
-          {
-            "rule_set": "telegramip"
-          }
+          {"domain_suffix": "push.apple.com"},
+          {"rule_set": "telegramip"}
         ],
         "invert": true,
         "action": "sniff",
         "timeout": "100ms"
       },
+      { "protocol": "dns", "action": "hijack-dns" },
+      {"clash_mode": "Global","action": "route","outbound": "✈️proxy"},
+      {"clash_mode": "Direct","action": "route","outbound": "direct"},
+      {"protocol": "ntp","action": "route","outbound": "direct"},
+      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "Global",
-        "action": "route",
-        "outbound": "✈️proxy"
-      },
-      {
-        "clash_mode": "Direct",
-        "action": "route",
-        "outbound": "direct"
-      },
-      {
-        "protocol": "ntp",
-        "action": "route",
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "adblock",
-          "BlockHttpDNS"
-        ],
-        "action": "reject",
-        "no_drop": true
-      },
-      {
-        "rule_set": [
-          "apple-cn",
-          "microsoft-cn",
-          "games-cn",
-          "cn"
-        ],
+        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
       },
@@ -338,54 +163,22 @@
         "type": "logical",
         "mode": "or",
         "rules": [
-          {
-            "protocol": [
-              "quic",
-              "stun"
-            ]
-          },
-          {
-            "network": "udp",
-            "port": 443
-          }
+           { "protocol": ["quic", "stun"] },
+           { "network": "udp", "port": 443 }
         ],
         "action": "reject",
         "no_drop": true
       },
+      { "rule_set": "meta","action": "route","outbound": "🔗Meta"},
+      { "rule_set": "spotify","action": "route","outbound": "🎶Spotify"},
       {
-        "rule_set": "spotify",
-        "action": "route",
-        "outbound": "🎶Spotify"
-      },
-      {
-        "rule_set": [
-          "fakeipfilter-!cn",
-          "youtube",
-          "netflix",
-          "telegramip"
-        ],
+        "rule_set": ["fakeipfilter-!cn","youtube","netflix","telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
       },
-      {
-        "rule_set": "proxy",
-        "action": "route",
-        "outbound": "✈️proxy"
-      },
-      {
-        "inbound": "tun-in",
-        "ip_cidr": [
-          "198.18.0.0/15"
-        ],
-        "action": "resolve"
-      },
-      {
-        "inbound": "tun-in",
-        "rule_set": "cnip",
-        "preferred_by": "bridge",
-        "action": "route",
-        "outbound": "bridge"
-      }
+      { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
+      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15"],"action": "resolve"},
+      { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"}
     ],
     "auto_detect_interface": true,
     "find_process": true,
@@ -395,34 +188,19 @@
     "rule_set": [
       {
         "type": "remote",
-        "tag": [
-          "fakeipfilter-cn",
-          "fakeipfilter-!cn"
-        ],
-        "format": "binary",
-        "url": "https://cdn.jsdelivr.net/gh/wuziwei/sing-box-config-template@main/rules/{tag}.srs",
-        "update_interval": "48h0m0s"
-      },
-      {
-        "type": "remote",
         "tag": "BlockHttpDNS",
         "url": "https://cdn.jsdelivr.net/gh/senshinya/singbox_ruleset@main/rule/BlockHttpDNS/BlockHttpDNS.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
-        "tag": [
-          "apple-cn",
-          "microsoft-cn",
-          "games-cn",
-          "cn",
-          "cnip",
-          "telegramip",
-          "youtube",
-          "netflix",
-          "spotify",
-          "proxy"
-        ],
+        "tag": ["fakeipfilter-cn","fakeipfilter-!cn","meta"],
+        "url": "https://cdn.jsdelivr.net/gh/wuziwei/sing-box-config-template@main/rules/{tag}.srs",
+        "update_interval": "48h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
         "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
