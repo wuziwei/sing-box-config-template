@@ -104,6 +104,18 @@
       // 双路 DoH 竞速响应：阿里与腾讯谁先返回结果，就采用谁的解析
       { "match_response": "ali-res", "action": "respond", "race": true },
       { "match_response": "pub-res", "action": "respond", "race": true },
+      // 国内 Fake-IP 过滤：NTP、局域网私有域名等直接通过阿里 DNS 返回国内真实 IP
+      {
+        "rule_set": "fakeipfilter-cn",
+        "action": "route",
+        "server": "ali"
+      },
+      // 国外 Fake-IP 过滤：全球公共 NTP、STUN 打洞穿透等经代理通过 Google DNS 返回海外真实 IP
+      {
+        "rule_set": "fakeipfilter-!cn",
+        "action": "route",
+        "server": "google"
+      },
       // 剩余未命中国内白名单的 A/AAAA 记录，全部直接分配 Fake-IP，TTL 设为 1s 便于即时刷新
       {
         "query_type": ["A", "AAAA"],
@@ -267,7 +279,7 @@
         "outbound": "🎶Spotify"
       },
       {
-        "rule_set": ["youtube","netflix","telegramip"],
+        "rule_set": ["fakeipfilter-!cn","youtube","netflix","telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
       }
@@ -282,6 +294,17 @@
 
     // 远端规则集（Rule Sets）定义
     "rule_set": [
+      // 自建 Fake-IP 过滤规则集（包含国内与国外两份规则，分别走真实国内/国外 DNS 解析）
+      {
+        "type": "remote",
+        "tag": [
+          "fakeipfilter-cn",
+          "fakeipfilter-!cn"
+        ],
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/wuziwei/sing-box-config-template@main/rules/{tag}.srs",
+        "update_interval": "48h0m0s"
+      },
       {
         "type": "remote",
         "tag": "BlockHttpDNS",
