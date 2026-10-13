@@ -3,31 +3,31 @@
   "rules": [
     {
       "domain": [
-        ".hatch.ecto1.ai",
-        ".node.hatch.one",
-        ".meta.privacy-gateway.cloudflare.com",
-        ".meta.hpke-keys.privacy-gateway.cloudflare.com",
-        ".meta-ohttp-relay-prod.fastly-edge.com",
-        ".meta-ohttp-config-prod.fastly-edge.com"
+        "hatch.ecto1.ai",
+        "node.hatch.one",
+        "meta.privacy-gateway.cloudflare.com",
+        "meta.hpke-keys.privacy-gateway.cloudflare.com",
+        "meta-ohttp-relay-prod.fastly-edge.com",
+        "meta-ohttp-config-prod.fastly-edge.com"
       ]
     },
     {
       "domain_suffix": [
-        ".muse.ai",
-        ".museai.com",
-        ".meta.ai",
-        ".meta.com",
-        ".atmeta.com",
-        ".facebook.com",
-        ".facebook.net",
-        ".fbcdn.net",
-        ".fbsbx.com",
-        ".fbpigeon.com",
-        ".fb.com",
-        ".instagram.com",
-        ".cdninstagram.com",
-        ".whatsapp.com",
-        ".whatsapp.net"
+        "muse.ai",
+        "museai.com",
+        "meta.ai",
+        "meta.com",
+        "atmeta.com",
+        "facebook.com",
+        "facebook.net",
+        "fbcdn.net",
+        "fbsbx.com",
+        "fbpigeon.com",
+        "fb.com",
+        "instagram.com",
+        "cdninstagram.com",
+        "whatsapp.com",
+        "whatsapp.net"
       ]
     }
   ]
