@@ -132,6 +132,16 @@
         "server": "google"
       },
       {
+        "rule_set": "proxy",
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "action": "route",
+        "server": "fakeip",
+        "rewrite_ttl": 1
+      },
+      {
         "query_type": [
           "A",
           "AAAA"
@@ -352,6 +362,11 @@
         "outbound": "✈️proxy"
       },
       {
+        "rule_set": "proxy",
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
+      {
         "inbound": "tun-in",
         "ip_cidr": [
           "198.18.0.0/15"
@@ -399,7 +414,8 @@
           "telegramip",
           "youtube",
           "netflix",
-          "spotify"
+          "spotify",
+          "proxy"
         ],
         "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
