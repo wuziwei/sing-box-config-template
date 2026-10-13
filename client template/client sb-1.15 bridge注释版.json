@@ -282,6 +282,21 @@
         "rule_set": ["fakeipfilter-!cn","youtube","netflix","telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
+      },
+      // 15. ⭐ 漏网 Fake-IP 解析与二次判定 (Post-Resolve CNIP)
+      // 针对所有未被上述域名规则捕获的 Fake-IP 未知连接，在路由层执行真实 IP 解析
+      {
+        "inbound": "tun-in",
+        "ip_cidr": ["198.18.0.0/15"],
+        "action": "resolve"
+      },
+      // 16. ⭐ 二次 CNIP 匹配：若刚刚解析出的真实 IP 属于中国大陆，走直连/桥接出站
+      {
+        "inbound": "tun-in",
+        "rule_set": "cnip",
+        "preferred_by": "bridge",
+        "action": "route",
+        "outbound": "bridge"
       }
     ],
 
