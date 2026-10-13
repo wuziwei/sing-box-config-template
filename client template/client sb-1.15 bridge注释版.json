@@ -1,12 +1,31 @@
+// ==============================================================================
+// sing-box 1.15 客户端配置（Bridge 旁路由模式 · 详细注释版）
+// 
+// 说明：
+// 1. 本配置采用标准 JSONC（支持 // 注释）编写，sing-box 内部解析器原生支持该格式。
+// 2. 核心架构：Fake-IP + DNS 智能探针预判 + 双重 cnip 校验 + Bridge 物理分流 + Hysteria 2 节点。
+// ==============================================================================
+
 {
+  // sing-box 配置规范 Schema，供编辑器（如 VS Code）提供语法高亮和字段自动补全
   "$schema": "https://sing-box.sagernet.org/schema.json",
+
+  // ==========================================
+  // 1. 日志模块 (Log)
+  // ==========================================
   "log": {
-    "disabled": false,
-    "level": "info",
-    "timestamp": true
+    "disabled": false,      // 启用日志记录
+    "level": "info",        // 日志级别：info（记录关键连接与解析事件）
+    "timestamp": true       // 在每条日志前打印时间戳
   },
+
+  // ==========================================
+  // 2. DNS 模块 (DNS)
+  // 采用 Fake-IP + 国内直连 + 智能探针 (Evaluate/Match) + ECS 协同架构
+  // ==========================================
   "dns": {
     "servers": [
+      // 静态 Hosts 解析器：为后续 DoH 域名提供静态 IP 引导，避免递归死锁（Bootstrap）
       {
         "type": "hosts",
         "tag": "hosts",
@@ -15,6 +34,7 @@
           "dns.google": ["8.8.8.8","8.8.4.4","2001:4860:4860::8888","2001:4860:4860::8844"]
         }
       },
+      // 远程可信 DNS：Google DoH，强制通过代理出站解析国外域名
       {
         "tag": "google",
         "type": "https",
@@ -22,20 +42,24 @@
         "domain_resolver": "hosts",
         "detour": "✈️proxy"
       },
+      // 国内 DNS：阿里 DoH，使用 hosts 进行引导解析
       {
         "tag": "ali",
         "type": "https",
         "server": "dns.alidns.com",
         "domain_resolver": "hosts"
       },
+      // Fake-IP 虚拟池：用于捕获海外流量，免除本地远程解析延迟
       {
         "tag": "fakeip",
         "type": "fakeip",
-        "inet4_range": "198.18.0.0/15",
-        "inet6_range": "fc00::/18"
+        "inet4_range": "198.18.0.0/15", // 遵循 RFC 2544 基准测试保留段
+        "inet6_range": "fc00::/18"      // ULA 私有 IPv6 地址段
       }
     ],
+
     "rules": [  
+      // Clash 模式覆盖：Direct 模式强制走国内 DNS，Global 强制走 Fake-IP
       {
         "clash_mode": "Direct",
         "action": "route",
@@ -48,15 +72,21 @@
         "server": "fakeip",
         "rewrite_ttl": 1
       },
+      // 广告与 HTTPDNS 阻断：命中则直接返回域名不存在 (NXDOMAIN)
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "predefined","rcode": "NXDOMAIN" },
+      // 屏蔽 Apple 等客户端常用的 HTTPS/SVCB/PTR 记录查询，规避 ECH 协商引发的分流逃逸
       { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"},
+      // 国内直连白名单与内网过滤域名：直接走阿里 DNS 获取真实 IP
       {
         "rule_set": ["fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "server": "ali"
       },
+      // 国外 Real-IP 过滤域名（如特定直连境外节点、CDN）：强制走 Google DNS 获取可信真实 IP
       { "rule_set": "fakeipfilter-!cn","action": "route","server": "google"},
+      // 代理规则集 (proxy) 预分配：明确需走代理的域名提前分配 Fake-IP，避免后续探针开销
       { "rule_set": "proxy", "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 },
+      // 智能探针：针对未命中的域名，携带国内 ECS (client_subnet) 向 Google DNS 预解析评估
       {
         "query_type": ["A", "AAAA"],
         "action": "evaluate",
@@ -64,58 +94,80 @@
         "client_subnet": "223.5.5.0/24",
         "timeout": "1s"
       },
+      // 探针响应匹配：若预评估返回的真实 IP 命中 cnip 规则集，则重定向至阿里 DNS 获取最优国内真实解析
       { "match_response": true, "rule_set": "cnip", "server": "ali" },
+      // 兜底虚拟分配：剩余海外/未知 A/AAAA 记录分配 Fake-IP，TTL 设为 1s 便于即时刷新
       { "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 }
     ],
-    "final": "google",
-    "reverse_mapping": true,
-    "timeout": "10s",
-    "cache_capacity": 16384,
+    "final": "google",            // DNS 兜底解析服务器
+    "reverse_mapping": true,      // 启用 Fake-IP 真实 IP 逆向映射，便于 TUN 识别实际目标
+    "timeout": "10s",             // DNS 查询超时
+    "cache_capacity": 16384,      // 内存 DNS 缓存条目上限
     "optimistic": {
-      "enabled": true,
+      "enabled": true,            // 开启乐观 DNS 缓存（过期记录先应答，后台异步静默刷新）
       "timeout": "5m0s"
     }
   },
+
+  // ==========================================
+  // 3. HTTP 客户端配置 (HTTP Clients)
+  // 用于远程规则集下载、面板文件下载等内部 HTTP 请求
+  // ==========================================
   "http_clients": [
     {
       "tag": "default",
-      "version": 2,
-      "stream_receive_window": 0,
+      "version": 2,                  // 使用 HTTP/2 协议
+      "stream_receive_window": 0,    // 0 表示使用系统默认滑动窗口
       "connection_receive_window": 0
     }
   ],
+
+  // ==========================================
+  // 4. 入站配置 (Inbounds)
+  // ==========================================
   "inbounds": [
+    // TUN 虚拟网卡入站：接管系统全局流量
     {
       "type": "tun",
       "tag": "tun-in",
       "address": [
-        "172.19.0.1/30",
-        "fdfe:dcba:9876::1/126"
-        ],
+        "172.19.0.1/30",             // IPv4 网卡私有地址
+        "fdfe:dcba:9876::1/126"      // IPv6 网卡私有地址
+      ],
       "loopback_address": ["10.7.0.1"],
-      "auto_route": true,
-      "strict_route": true,
+      "auto_route": true,            // 自动配置系统路由表接管默认网关
+      "strict_route": true,          // 严格路由模式，防止 DNS 和默认路由泄漏
       "mtu": 1400,
       "platform": {
         "http_proxy": {
-          "enabled": true,
+          "enabled": true,           // 注入系统 HTTP 代理设置
           "server": "127.0.0.1",
           "server_port": 7890
         }
       }
     },
+    // 混合代理入站：同时监听本地 7890 端口，兼容 HTTP(S) 与 SOCKS5
     {
       "type": "mixed",
       "listen": "127.0.0.1",
       "listen_port": 7890
     }
   ],
+
+  // ==========================================
+  // 5. 路由分流模块 (Route)
+  // ==========================================
   "route": {
     "rules": [
+      // 1. DNS 劫持：拦截入站的 53 端口，强制注入 sing-box 内部 DNS 引擎
       { "port": 53, "action": "hijack-dns" },
+      // 2. ICMP / Ping 真实 IP 还原与转发
       { "network": "icmp", "action": "resolve" },
+      // 3. 回环/无效地址拦截
       { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
+      // 4. 环回地址放行至 Bridge 桥接出站
       { "ip_cidr": ["10.7.0.1/32"],"action": "route","outbound": "direct"},
+      // 5. IPv6 防泄漏与黑洞：如果物理网卡没有公网 IPv6 (2000::/3)，则拦截除 Fake-IP 以外的 IPv6 连接
       {
         "type": "logical",
         "mode": "and",
@@ -130,14 +182,19 @@
        "action": "reject",
        "no_drop": true
       },
-      {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
+      // 6. ICMP Ping 优先走 Bridge 出站
+      {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge" },
+      // 7. Tailscale 内网地址段（CGNAT 段 100.64.0.0/10 及 ULA IPv6 段）路由至 Tailscale 端点
       {
        "ip_cidr": [ "100.64.0.0/10","fd7a:115c:a1e0::/48"],
        "action": "route",
        "outbound": "ts-ep"
       },
+      // 8. 局域网私有 IP 直连
       {"ip_is_private": true,"action": "route","outbound": "direct"},
+      // 9. 邮件安全策略：拦截国内 IP 上的 IMAPS 993 端口
       {"port": 993,"rule_set": "cnip","action": "reject"}, 
+      // 10. 特殊进程（下载器 Motrix、aria2c）走 Bridge 直连出站
       {
         "inbound": "tun-in",
         "preferred_by": "bridge",
@@ -145,8 +202,11 @@
         "action": "route",
         "outbound": "bridge"
       }, 
+      // 11. Google 核心 API 与测试域名走代理
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
+      // 12. Pre-sniff 中国大陆 IP 预匹配：嗅探前优先放行国内 IP，走 Bridge 出站提升性能
       { "inbound": "tun-in","rule_set": "cnip","action": "route","preferred_by": "bridge","outbound": "bridge"},
+      // 13. 流量协议嗅探：提取 TLS SNI 与 HTTP Host，排除 Telegram IP 与 Apple Push 避免干扰
       {
         "type": "logical",
         "mode": "or",
@@ -158,16 +218,22 @@
         "action": "sniff",
         "timeout": "100ms"
       },
+      // 14. DNS 劫持：拦截嗅探后识别出的 dns 协议流量
       { "protocol": "dns", "action": "hijack-dns" },
+      // 15. Clash 模式路由覆盖
       {"clash_mode": "Global","action": "route","outbound": "✈️proxy"},
       {"clash_mode": "Direct","action": "route","outbound": "direct"},
+      // 16. NTP 网络对时直连
       {"protocol": "ntp","action": "route","outbound": "direct"},
+      // 17. 阻断广告与 HTTPDNS 流量
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
+      // 18. 国内常用服务（苹果、微软、游戏、国内主流域名）直连
       {
         "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
       },
+      // 19. 阻断 QUIC、STUN 及常见 WebRTC 穿透端口（防止 IP 泄漏并强制回退到 TCP）
       {
         "type": "logical",
         "mode": "or",
@@ -178,41 +244,53 @@
         "action": "reject",
         "no_drop": true
       },
+      // 20. 专项服务路由：Meta 旗下服务 / Spotify 音乐
       { "rule_set": "meta","action": "route","outbound": "🔗Meta"},
       { "rule_set": "spotify","action": "route","outbound": "🎶Spotify"},
+      // 21. 海外流媒体、海外 Real-IP 及社交平台策略分流
       {
         "rule_set": ["fakeipfilter-!cn","youtube","netflix","telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
       },
+      // 22. 代理规则集 (proxy) 流量走代理出站
       { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
+      // 23. TUN 入站 Fake-IP (198.18.0.0/15) 真实 IP 还原解析
       { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15"],"action": "resolve"},
+      // 24. Post-resolve 中国大陆 IP 二次校验：捕获漏网生僻国内网站，还原真实 IP 后直连，防止误走代理
       { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"}
     ],
-    "auto_detect_interface": true,
-    "find_process": true,
-    "default_domain_resolver": "ali",
-    "default_http_client": "default",
-    "final": "🕸️final",
+    // 路由辅助控制
+    "auto_detect_interface": true,   // 自动检测默认网络接口变化
+    "find_process": true,           // 启用进程溯源（匹配 process_name）
+    "default_domain_resolver": "ali",// 路由规则集和连接过程中默认的域名解析器
+    "default_http_client": "default",// 路由层下载资源时使用的 HTTP Client
+    "final": "🕸️final",              // 规则未命中时的最终兜底出站
+
+    // 远端规则集（Rule Sets）定义
     "rule_set": [
+      // 广告与 HTTPDNS 阻断规则集
       {
         "type": "remote",
         "tag": "BlockHttpDNS",
         "url": "https://cdn.jsdelivr.net/gh/senshinya/singbox_ruleset@main/rule/BlockHttpDNS/BlockHttpDNS.srs",
         "update_interval": "48h0m0s"
       },
+      // 自定义规则集：Fake-IP 过滤（国内 Real-IP / 海外 Real-IP）及 Meta 专属规则
       {
         "type": "remote",
         "tag": ["fakeipfilter-cn","fakeipfilter-!cn","meta"],
         "url": "https://cdn.jsdelivr.net/gh/wuziwei/sing-box-config-template@main/rules/{tag}.srs",
         "update_interval": "48h0m0s"
       },
+      // DustinWin 预编译全量 GeoData 规则集
       {
         "type": "remote",
         "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
         "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
+      // 黑名单广告过滤规则集
       {
         "type": "remote",
         "tag": "adblock",
@@ -221,23 +299,32 @@
       }
     ]
   },
+
+  // ==========================================
+  // 6. 内置端点 (Endpoints)
+  // ==========================================
   "endpoints": [
     {
       "type": "tailscale",
       "tag": "ts-ep",
-      "auth_key": "input your auth_key",
-      "state_directory": "tailscale.state",
+      "auth_key": "input your auth_key",       // Tailscale 授权认证 Key
+      "state_directory": "tailscale.state",     // 设备状态持久化目录
       "advertise_routes": [
-        "192.168.1.0/24"
+        "192.168.1.0/24"                       // 对外宣告的局域网子网路由（Subnet Router）
       ],
-      "ephemeral": false,
-      "accept_routes": true,
-      "advertise_exit_node": true,
-      "udp_timeout": "5m",
-      "on_demand": true
+      "ephemeral": false,                       // 非临时设备，断连保留节点
+      "accept_routes": true,                    // 接收其他节点宣告的子网路由
+      "advertise_exit_node": true,              // 宣告自身作为 Exit Node（出口节点）
+      "udp_timeout": "5m",                      // UDP 映射保活超时时间
+      "on_demand": true                         // 按需唤醒连接
     }
   ],
+
+  // ==========================================
+  // 7. 出站策略与节点 (Outbounds)
+  // ==========================================
   "outbounds": [
+    // 基础代理组（用户手动切换或指向测速组）
     {
       "tag": "✈️proxy",
       "type": "selector",
@@ -268,6 +355,7 @@
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
+    // Spotify 专项代理策略组
     {
       "tag": "🎶Spotify",
       "type": "selector",
@@ -298,6 +386,7 @@
       ],
       "default": "🇯🇵JP3-hy2"
     },
+    // 自动延迟测速分组
     {
       "tag": "⚡️Latency(🇯🇵/🇰🇷)",
       "type": "urltest",
@@ -315,6 +404,7 @@
       "idle_timeout": "20m0s",
       "interrupt_exist_connections": true
     },
+    // 兜底选择组
     {
       "tag": "🕸️final",
       "type": "selector",
@@ -324,6 +414,7 @@
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
+    // 全局节点选择器
     {
       "tag": "GLOBAL",
       "type": "selector",
@@ -354,59 +445,73 @@
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
     },
+    // 系统物理网络直接出站
     {
       "tag": "direct",
       "type": "direct"
     },
+    // 桥接出站（用于配合 preferred_by 进行物理接口分流）
     {
       "tag": "bridge",
       "type": "bridge"
     },
+    // Hysteria 2 协议节点定义示例
     {
       "type": "hysteria2",
       "tag": "🇯🇵JP1-hy2",
       "server": "your server ip/domain",
       "server_port": 2053,
-      "up_mbps": 35,
-      "down_mbps": 35,
+      "up_mbps": 35,                           // 上行带宽限速 35 Mbps
+      "down_mbps": 35,                         // 下行带宽限速 35 Mbps
       "password": "inpout your server pw",
       "obfs": {
-        "type": "salamander",
+        "type": "salamander",                  // 混淆类型：Salamander 混淆
         "password": "inpout your server p"
       },
       "tls": {
         "enabled": true,
-        "server_name": "inpout your server domain",
+        "server_name": "inpout your server domain", // TLS SNI 伪装域名
         "alpn": [
-          "h3"
+          "h3"                                 // 协商应用层协议：HTTP/3
         ]
       }
     }
   ],
+
+  // ==========================================
+  // 8. 扩展服务 (Services)
+  // ==========================================
   "services": [
+    // sing-box 原生 RESTful API 控制服务
     {
       "type": "api",
       "listen": "127.0.0.1",
       "listen_port": 9091,
-      "secret": "",
+      "secret": "",                            // API 鉴权密钥（留空表示无需认证）
       "dashboard": {
-        "enabled": true,
+        "enabled": true,                       // 开启内置面板
         "http_client": "default",
         "download_url": "https://ghfast.top/https://github.com/SagerNet/sing-box-dashboard/archive/refs/heads/gh-pages.zip"
       }
     }
   ],
+
+  // ==========================================
+  // 9. 实验性特性 (Experimental)
+  // ==========================================
   "experimental": {
+    // 兼容 Clash API（允许外部第三方面板连接，如 Yacd、MetaCubeX 等）
     "clash_api": {
-      "external_controller": "127.0.0.1:9090",
-      "external_ui": "ui",
-      "secret": "",
-      "external_ui_download_detour": "✈️proxy"
+      "external_controller": "127.0.0.1:9090", // Clash API 监听地址
+      "external_ui": "ui",                     // 本地面板资源目录名
+      "secret": "",                            // Clash API 访问密钥
+      "external_ui_download_detour": "✈️proxy" // 下载外部面板资源时的出站代理
     },
+    // 持久化缓存：保存 Fake-IP 映射和 DNS 记录到磁盘，重启后无需重新解析
     "cache_file": {
       "enabled": true,
-      "store_fakeip": true,
-      "store_dns": true
+      "store_fakeip": true,                    // 持久化 Fake-IP 映射表
+      "store_dns": true                        // 持久化 DNS 缓存记录
     }
   }
 }
