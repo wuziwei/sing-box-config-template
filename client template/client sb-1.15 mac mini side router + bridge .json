@@ -187,25 +187,25 @@
       {
         "type": "remote",
         "tag": "BlockHttpDNS",
-        "url": "https://cdn.jsdelivr.net/gh/senshinya/singbox_ruleset@main/rule/BlockHttpDNS/BlockHttpDNS.srs",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/senshinya/singbox_ruleset/main/rule/BlockHttpDNS/BlockHttpDNS.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
         "tag": ["fakeipfilter-cn","fakeipfilter-!cn","meta"],
-        "url": "https://cdn.jsdelivr.net/gh/wuziwei/sing-box-config-template@main/rules/{tag}.srs",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/wuziwei/sing-box-config-template/main/rules/{tag}.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
         "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
-        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/{tag}.srs",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
         "tag": "adblock",
-        "url": "https://cdn.jsdelivr.net/gh/217heidai/adblockfilters@main/rules/adblocksingboxlite.srs",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblocksingboxlite.srs",
         "update_interval": "48h0m0s"
       }
     ]
@@ -256,6 +256,19 @@
         "🇰🇷SK3-hy2-v6"
       ],
       "default": "⚡️Latency(🇯🇵/🇰🇷)"
+    },
+    {
+      "tag": "🔗Meta",
+      "type": "selector",
+      "outbounds": [
+        "🇺🇸US1-hy2",
+        "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
+        "🇺🇸US1-hy2-v6",
+        "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6"
+      ],
+      "default":  "🇺🇸US1-hy2"
     },
     {
       "tag": "🎶Spotify",
