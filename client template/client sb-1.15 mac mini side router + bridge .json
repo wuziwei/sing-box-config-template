@@ -119,14 +119,15 @@
        "action": "reject",
        "no_drop": true
       },
-      {"network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
+      { "network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
       {
        "ip_cidr": [ "100.64.0.0/10","fd7a:115c:a1e0::/48"],
        "action": "route",
        "outbound": "ts-ep"
       },
-      {"ip_is_private": true,"action": "route","outbound": "direct"},
-      {"port": 993,"rule_set": "cnip","action": "reject"}, 
+      { "ip_is_private": true,"action": "route","outbound": "direct"},
+      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
+      { "port": 993,"rule_set": "cnip","action": "reject"}, 
       {
         "inbound": "tun-in",
         "preferred_by": "bridge",
@@ -148,10 +149,9 @@
         "timeout": "100ms"
       },
       { "protocol": "dns", "action": "hijack-dns" },
-      {"clash_mode": "Global","action": "route","outbound": "✈️proxy"},
-      {"clash_mode": "Direct","action": "route","outbound": "direct"},
-      {"protocol": "ntp","action": "route","outbound": "direct"},
-      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
+      { "clash_mode": "Global","action": "route","outbound": "✈️proxy"},
+      { "clash_mode": "Direct","action": "route","outbound": "direct"},
+      { "protocol": "ntp","action": "route","outbound": "direct"},
       {
         "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
