@@ -102,7 +102,7 @@
     "final": "google",            // DNS 兜底解析服务器
     "reverse_mapping": true,      // 启用 Fake-IP 真实 IP 逆向映射，便于 TUN 识别实际目标
     "timeout": "10s",             // DNS 查询超时
-    "cache_capacity": 16384,      // 内存 DNS 缓存条目上限
+    "cache_capacity": 8192,      // 内存 DNS 缓存条目上限
     "optimistic": {
       "enabled": true,            // 开启乐观 DNS 缓存（过期记录先应答，后台异步静默刷新）
       "timeout": "5m0s"
