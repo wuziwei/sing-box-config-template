@@ -17,17 +17,17 @@
     },
     {
       "domain_suffix": [
-        ".direct",
-        ".example",
-        ".home.arpa",
-        ".invalid",
-        ".kk-rays.com",
-        ".lan",
-        ".local",
-        ".localdomain",
-        ".localhost",
-        ".steamcontent.com",
-        ".test"
+        "direct",
+        "example",
+        "home.arpa",
+        "invalid",
+        "kk-rays.com",
+        "lan",
+        "local",
+        "localdomain",
+        "localhost",
+        "steamcontent.com",
+        "test"
       ]
     },
     {
@@ -38,10 +38,6 @@
     },
     {
       "domain_regex": [
-        "^(.+\\.)?stun\\.[^.]+\\.[^.]+\\.[^.]+\\.[^.]+\\.cn$",
-        "^(.+\\.)?stun\\.[^.]+\\.[^.]+\\.[^.]+\\.cn$",
-        "^(.+\\.)?stun\\.[^.]+\\.[^.]+\\.cn$",
-        "^(.+\\.)?stun\\.[^.]+\\.cn$",
         "^DC\\._msDCS\\.[^.]+\\.[^.]+$",
         "^GC\\._msDCS\\.[^.]+\\.[^.]+$",
         "^PDC\\._msDCS\\.[^.]+\\.[^.]+$",
@@ -73,8 +69,6 @@
         "^[^.]+\\.xiami\\.com$",
         "^[^.]+\\.y\\.qq\\.com$",
         "^localhost\\.[^.]+\\.weixin\\.qq\\.com$",
-        "^stun\\.[^.]+\\.[^.]+\\.cn$",
-        "^stun\\.[^.]+\\.cn$",
         "^time\\.[^.]+\\.edu\\.cn$"
       ]
     }
