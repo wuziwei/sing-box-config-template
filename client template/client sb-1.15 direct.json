@@ -136,8 +136,9 @@
        "action": "route",
        "outbound": "ts-ep"
       },
-      {"ip_is_private": true,"action": "route","outbound": "direct"},
-      {"port": 993,"rule_set": "cnip","action": "reject"}, 
+      { "ip_is_private": true,"action": "route","outbound": "direct"},
+      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
+      { "port": 993,"rule_set": "cnip","action": "reject"}, 
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
       { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"},
       {
@@ -155,7 +156,6 @@
       { "clash_mode": "Global","action": "route","outbound": "✈️proxy"},
       { "clash_mode": "Direct","action": "route","outbound": "direct"},
       { "protocol": "ntp","action": "route","outbound": "direct"},
-      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       {
         "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
