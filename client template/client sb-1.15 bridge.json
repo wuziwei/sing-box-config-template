@@ -323,10 +323,10 @@
         "🇰🇷SK3-hy2-v6"
       ],
       "url": "https://www.gstatic.com/generate_204",
-      "interval": "3m",
+      "interval": "10m",
       "tolerance": 25,
       "idle_timeout": "20m0s",
-      "interrupt_exist_connections": true
+      "interrupt_exist_connections": false
     },
     {
       "tag": "🕸️final",
