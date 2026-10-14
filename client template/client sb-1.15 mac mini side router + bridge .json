@@ -60,7 +60,7 @@
     "final": "google",
     "reverse_mapping": true,
     "timeout": "10s",
-    "cache_capacity": 16384,
+    "cache_capacity": 8192,
     "optimistic": {
       "enabled": true,
       "timeout": "5m0s"
