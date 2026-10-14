@@ -192,9 +192,11 @@
       },
       // 8. 局域网私有 IP 直连
       {"ip_is_private": true,"action": "route","outbound": "direct"},
-      // 9. 邮件安全策略：拦截国内 IP 上的 IMAPS 993 端口
+      // 9. 阻断广告与 HTTPDNS 流量
+      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
+      // 10. 邮件安全策略：拦截国内 IP 上的 IMAPS 993 端口
       {"port": 993,"rule_set": "cnip","action": "reject"}, 
-      // 10. 特殊进程（下载器 Motrix、aria2c）走 Bridge 直连出站
+      // 11. 特殊进程（下载器 Motrix、aria2c）走 Bridge 直连出站
       {
         "inbound": "tun-in",
         "preferred_by": "bridge",
@@ -202,11 +204,11 @@
         "action": "route",
         "outbound": "bridge"
       }, 
-      // 11. Google 核心 API 与测试域名走代理
+      // 12. Google 核心 API 与测试域名走代理
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
-      // 12. Pre-sniff 中国大陆 IP 预匹配：嗅探前优先放行国内 IP，走 Bridge 出站提升性能
+      // 13. Pre-sniff 中国大陆 IP 预匹配：嗅探前优先放行国内 IP，走 Bridge 出站提升性能
       { "inbound": "tun-in","rule_set": "cnip","action": "route","preferred_by": "bridge","outbound": "bridge"},
-      // 13. 流量协议嗅探：提取 TLS SNI 与 HTTP Host，排除 Telegram IP 与 Apple Push 避免干扰
+      // 14. 流量协议嗅探：提取 TLS SNI 与 HTTP Host，排除 Telegram IP 与 Apple Push 避免干扰
       {
         "type": "logical",
         "mode": "or",
@@ -218,15 +220,13 @@
         "action": "sniff",
         "timeout": "100ms"
       },
-      // 14. DNS 劫持：拦截嗅探后识别出的 dns 协议流量
+      // 15. DNS 劫持：拦截嗅探后识别出的 dns 协议流量
       { "protocol": "dns", "action": "hijack-dns" },
-      // 15. Clash 模式路由覆盖
+      // 16. Clash 模式路由覆盖
       {"clash_mode": "Global","action": "route","outbound": "✈️proxy"},
       {"clash_mode": "Direct","action": "route","outbound": "direct"},
-      // 16. NTP 网络对时直连
+      // 17. NTP 网络对时直连
       {"protocol": "ntp","action": "route","outbound": "direct"},
-      // 17. 阻断广告与 HTTPDNS 流量
-      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       // 18. 国内常用服务（苹果、微软、游戏、国内主流域名）直连
       {
         "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
