@@ -175,7 +175,7 @@
         "outbound": "✈️proxy"
       },
       { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
-      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15"],"action": "resolve"},
+      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15","fc00::/18"],"action": "resolve"},
       { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"}
     ],
     "auto_detect_interface": true,
