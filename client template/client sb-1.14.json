@@ -137,7 +137,7 @@
        "action": "route",
        "outbound": "ts-ep"
       },
-      { "ip_is_private": true,"action": "route","outbound": "direct"},
+      { "rule_set": "privateip","action": "route","outbound": "direct"},
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       { "port": 993,"rule_set": "cnip","action": "reject"},
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
@@ -158,7 +158,7 @@
       { "clash_mode": "Direct","action": "route","outbound": "direct"},
       { "protocol": "ntp","action": "route","outbound": "direct"},
       {
-        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": ["trackerslist","private","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
       },
@@ -202,7 +202,7 @@
       },
       {
         "type": "remote",
-        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
+        "tag": ["trackerslist","private","privateip","apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
         "url": "https://ghfast.top/https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
