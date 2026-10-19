@@ -41,7 +41,7 @@
       { "clash_mode": "Direct","action": "route","server": "ali"},
       { "clash_mode": "Global","query_type": ["A", "AAAA"],"action": "route","server": "fakeip","rewrite_ttl": 1},
       {
-        "rule_set": ["fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": ["trackerslist","private","fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "server": "ali"
       },
@@ -125,7 +125,7 @@
        "action": "route",
        "outbound": "ts-ep"
       },
-      { "ip_is_private": true,"action": "route","outbound": "direct"},
+      { "rule_set": "privateip","action": "route","outbound": "direct"},
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       { "port": 993,"rule_set": "cnip","action": "reject"}, 
       {
@@ -153,7 +153,7 @@
       { "clash_mode": "Direct","action": "route","outbound": "direct"},
       { "protocol": "ntp","action": "route","outbound": "direct"},
       {
-        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": ["trackerslist","private","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
       },
@@ -198,7 +198,7 @@
       },
       {
         "type": "remote",
-        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
+        "tag": ["trackerslist","private","privateip","apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
         "url": "https://ghfast.top/https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
