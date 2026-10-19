@@ -78,7 +78,7 @@
       { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"},
       // 国内直连白名单与内网过滤域名：直接走阿里 DNS 获取真实 IP
       {
-        "rule_set": ["fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": ["trackerslist","private","fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "server": "ali"
       },
@@ -191,7 +191,7 @@
        "outbound": "ts-ep"
       },
       // 8. 局域网私有 IP 直连
-      {"ip_is_private": true,"action": "route","outbound": "direct"},
+      {"rule_set": "privateip","action": "route","outbound": "direct"},
       // 9. 阻断广告与 HTTPDNS 流量
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       // 10. 邮件安全策略：拦截国内 IP 上的 IMAPS 993 端口
@@ -229,7 +229,7 @@
       {"protocol": "ntp","action": "route","outbound": "direct"},
       // 18. 国内常用服务（苹果、微软、游戏、国内主流域名）直连
       {
-        "rule_set": ["apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": ["trackerslist","private","apple-cn","microsoft-cn","games-cn","cn"],
         "action": "route",
         "outbound": "direct"
       },
@@ -283,7 +283,7 @@
       },
       {
         "type": "remote",
-        "tag": ["apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
+        "tag": ["trackerslist","private","privateip","apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
         "url": "https://ghfast.top/https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
