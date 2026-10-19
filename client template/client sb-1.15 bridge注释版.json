@@ -256,7 +256,7 @@
       // 22. 代理规则集 (proxy) 流量走代理出站
       { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
       // 23. TUN 入站 Fake-IP (198.18.0.0/15) 真实 IP 还原解析
-      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15"],"action": "resolve"},
+      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15","fc00::/18"],"action": "resolve"},
       // 24. Post-resolve 中国大陆 IP 二次校验：捕获漏网生僻国内网站，还原真实 IP 后直连，防止误走代理
       { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"}
     ],
