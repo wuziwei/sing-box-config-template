@@ -45,3 +45,14 @@
      -  tailscale (on demand)
      -  Bridge on pre-match
      -  Sing-box api & clash api
+       
+ 5. sing-box 1.15 linux (auto-redirect)
+     -  国内realip，国外Fake ip （fakeipfilter）
+     -  小众域名精准分流
+     -  增加meta规则集（muse ai，facebook，whatsapp，instagram，facebook）
+     -  ipv4&v6(自动判断v6规则，没有V6自动拦截）
+     -  Ad block（广告拦截）
+     -  Webrtc leak protect（webrtc拦截防止ip泄漏）
+     -  tailscale (on demand)
+     -  Bridge on pre-match
+     -  Sing-box api & clash api
