@@ -42,7 +42,6 @@
     "rules": [ 
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "predefined","rcode": "NXDOMAIN" },
       { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"}, 
-      { "domain_suffix": ["444556.xyz","firstwall.eu.org"],"action": "route","server": "ali"},
       { "clash_mode": "Direct","action": "route","server": "ali"},
       { "clash_mode": "Global","query_type": ["A", "AAAA"],"action": "route","server": "fakeip","rewrite_ttl": 1},
       {
@@ -163,7 +162,6 @@
         "mode": "or",
         "rules": [
           { "protocol": "ntp" },
-          { "domain_suffix": ["444556.xyz", "firstwall.eu.org"] },
           { "rule_set": ["trackerslist", "private", "apple-cn", "microsoft-cn", "games-cn", "cn"] }
         ],
         "action": "route",
