@@ -23,7 +23,7 @@
         "tag": "google",
         "type": "https",
         "server": "dns.google",
-        "domain_resolver": "hosts",
+        "domain_resolver": "hosts", 
         "detour": "✈️proxy"
       },
       {
