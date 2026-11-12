@@ -107,6 +107,7 @@
     },
     {
       "type": "mixed",
+      "tag": "mixed-in",
       "listen": "127.0.0.1",
       "listen_port": 7890
     }
@@ -141,7 +142,7 @@
       { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
       { "port": 993,"rule_set": "cnip","action": "reject"},
       { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
-      { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"},
+      { "rule_set": "cnip","action": "route","outbound": "direct"},
       {
         "type": "logical",
         "mode": "or",
@@ -180,8 +181,8 @@
         "outbound": "✈️proxy"
       },
       { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
-      { "inbound": "tun-in","ip_cidr": ["198.18.0.0/15","fc00::/18"],"action": "resolve"},
-      { "inbound": "tun-in","rule_set": "cnip","action": "route","outbound": "direct"}
+      { "action": "resolve"},
+      { "rule_set": ["privateip", "cnip"],"action": "route","outbound": "direct"}
     ],
     "auto_detect_interface": true,
     "default_domain_resolver": "ali",
