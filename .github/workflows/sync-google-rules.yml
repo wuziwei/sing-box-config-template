@@ -1,0 +1,47 @@
+name: Sync and Build Clean Google Ruleset
+
+on:
+  schedule:
+    - cron: '0 20 * * *' # Every day at 04:00 AM CST (UTC 20:00)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install sing-box
+        run: |
+          LATEST_TAG=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep '"tag_name":' | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')
+          VERSION=${LATEST_TAG#v}
+          echo "Installing sing-box version: $VERSION ($LATEST_TAG)"
+          curl -Lo sing-box.tar.gz "https://github.com/SagerNet/sing-box/releases/download/${LATEST_TAG}/sing-box-${VERSION}-linux-amd64.tar.gz"
+          tar -xzf sing-box.tar.gz --strip-components=1
+          sudo mv sing-box /usr/local/bin/
+          sing-box version
+
+      - name: Build and filter Google ruleset
+        run: |
+          python scripts/build_rules.py
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add rules/google.json rules/google.srs
+          if git diff --staged --quiet; then
+            echo "No changes detected in Google ruleset."
+          else
+            git commit -m "chore(rules): auto-sync google ruleset from upstream [skip ci]"
+            git push
+          fi
