@@ -385,7 +385,6 @@
       }
     ],
     "auto_detect_interface": true,
-    "default_mark": 8228,
     "find_process": true,
     "default_domain_resolver": "ali",
     "default_http_client": "default",
