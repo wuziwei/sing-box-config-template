@@ -21,7 +21,12 @@
             "2400:3200::1",
             "2400:3200:baba::1"
           ],
-          "dns.google": ["8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"]
+          "dns.google": [
+            "8.8.8.8",
+            "8.8.4.4",
+            "2001:4860:4860::8888",
+            "2001:4860:4860::8844"
+          ]
         }
       },
       {
@@ -54,12 +59,19 @@
         "rcode": "NXDOMAIN"
       },
       {
-        "query_type": ["SVCB", "HTTPS", "PTR"],
+        "query_type": [
+          "SVCB",
+          "HTTPS",
+          "PTR"
+        ],
         "action": "predefined",
         "rcode": "NOERROR"
       },
       {
-        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
+        "domain_suffix": [
+          "444556.xyz",
+          "firstwall.eu.org"
+        ],
         "action": "route",
         "server": "ali"
       },
@@ -70,13 +82,24 @@
       },
       {
         "clash_mode": "Global",
-        "query_type": ["A", "AAAA"],
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
         "action": "route",
         "server": "fakeip",
         "rewrite_ttl": 1
       },
       {
-        "rule_set": ["trackerslist", "private", "fakeipfilter-cn", "apple-cn", "microsoft-cn", "games-cn", "cn"],
+        "rule_set": [
+          "trackerslist",
+          "private",
+          "fakeipfilter-cn",
+          "apple-cn",
+          "microsoft-cn",
+          "games-cn",
+          "cn"
+        ],
         "action": "route",
         "server": "ali"
       },
@@ -87,12 +110,18 @@
       },
       {
         "rule_set": "proxy",
-        "query_type": ["A", "AAAA"],
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
         "server": "fakeip",
         "rewrite_ttl": 1
       },
       {
-        "query_type": ["A", "AAAA"],
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
         "action": "evaluate",
         "server": "google",
         "client_subnet": "223.5.5.0/24",
@@ -104,7 +133,10 @@
         "server": "ali"
       },
       {
-        "query_type": ["A", "AAAA"],
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
         "server": "fakeip",
         "rewrite_ttl": 1
       }
@@ -134,9 +166,12 @@
         "172.19.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
-      "loopback_address": ["10.7.0.1"],
+      "loopback_address": [
+        "10.7.0.1"
+      ],
       "auto_route": true,
-      "auto_redirect": true
+      "strict_route": true,
+      "mtu": 1400
     },
     {
       "tag": "mixed-in",
@@ -162,7 +197,9 @@
         "action": "reject"
       },
       {
-        "ip_cidr": ["10.7.0.1/32"],
+        "ip_cidr": [
+          "10.7.0.1/32"
+        ],
         "action": "route",
         "outbound": "direct"
       },
@@ -180,7 +217,9 @@
             "invert": true
           },
           {
-            "default_interface_address": ["2000::/3"],
+            "default_interface_address": [
+              "2000::/3"
+            ],
             "invert": true
           }
         ],
@@ -193,7 +232,10 @@
         "outbound": "direct"
       },
       {
-        "ip_cidr": ["100.64.0.0/10", "fd7a:115c:a1e0::/48"],
+        "ip_cidr": [
+          "100.64.0.0/10",
+          "fd7a:115c:a1e0::/48"
+        ],
         "action": "route",
         "outbound": "ts-ep"
       },
@@ -203,7 +245,10 @@
         "outbound": "direct"
       },
       {
-        "rule_set": ["adblock", "BlockHttpDNS"],
+        "rule_set": [
+          "adblock",
+          "BlockHttpDNS"
+        ],
         "action": "reject",
         "no_drop": true
       },
@@ -213,12 +258,18 @@
         "action": "reject"
       },
       {
-        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
+        "domain_suffix": [
+          "444556.xyz",
+          "firstwall.eu.org"
+        ],
         "action": "route",
         "outbound": "direct"
       },
       {
-        "domain_suffix": ["googleapis.cn", "xn--ngstr-lra8j.com"],
+        "domain_suffix": [
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com"
+        ],
         "action": "route",
         "outbound": "🔍Google"
       },
@@ -262,7 +313,14 @@
         "outbound": "direct"
       },
       {
-        "rule_set": ["trackerslist", "private", "apple-cn", "microsoft-cn", "games-cn", "cn"],
+        "rule_set": [
+          "trackerslist",
+          "private",
+          "apple-cn",
+          "microsoft-cn",
+          "games-cn",
+          "cn"
+        ],
         "action": "route",
         "outbound": "direct"
       },
@@ -300,7 +358,12 @@
         "outbound": "🎶Spotify"
       },
       {
-        "rule_set": ["fakeipfilter-!cn", "youtube", "netflix", "telegramip"],
+        "rule_set": [
+          "fakeipfilter-!cn",
+          "youtube",
+          "netflix",
+          "telegramip"
+        ],
         "action": "route",
         "outbound": "✈️proxy"
       },
@@ -313,12 +376,16 @@
         "action": "resolve"
       },
       {
-        "rule_set": ["privateip", "cnip"],
+        "rule_set": [
+          "privateip",
+          "cnip"
+        ],
         "action": "route",
         "outbound": "direct"
       }
     ],
     "auto_detect_interface": true,
+    "default_mark": 8228,
     "find_process": true,
     "default_domain_resolver": "ali",
     "default_http_client": "default",
@@ -434,81 +501,151 @@
     {
       "tag": "🇺🇸US",
       "type": "urltest",
-      "outbounds": ["🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US2-hy2", "🇺🇸US3-hy2", "🇺🇸US1-hy2-v6", "🇺🇸US2-hy2-v6", "🇺🇸US3-hy2-v6"],
+      "outbounds": [
+        "🇺🇸US1-hy2-mlb",
+        "🇺🇸US1-hy2",
+        "🇺🇸US2-hy2",
+        "🇺🇸US3-hy2",
+        "🇺🇸US1-hy2-v6",
+        "🇺🇸US2-hy2-v6",
+        "🇺🇸US3-hy2-v6"
+      ],
       "url": "https://clients1.google.com/generate_204",
-      "interval": "30m",
-      "tolerance": 100,
-      "idle_timeout": "30m0s",
+      "interval": "15m",
+      "tolerance": 35,
+      "idle_timeout": "15m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🇯🇵JP",
       "type": "urltest",
-      "outbounds": ["🇯🇵JP1-hy2", "🇯🇵JP2-hy2", "🇯🇵JP3-hy2", "🇯🇵JP1-hy2-v6", "🇯🇵JP2-hy2-v6", "🇯🇵JP3-hy2-v6"],
+      "outbounds": [
+        "🇯🇵JP1-hy2",
+        "🇯🇵JP2-hy2",
+        "🇯🇵JP3-hy2",
+        "🇯🇵JP1-hy2-v6",
+        "🇯🇵JP2-hy2-v6",
+        "🇯🇵JP3-hy2-v6"
+      ],
       "url": "https://clients1.google.com/generate_204",
-      "interval": "30m",
-      "tolerance": 100,
-      "idle_timeout": "30m0s",
+      "interval": "15m",
+      "tolerance": 35,
+      "idle_timeout": "15m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🇨🇦CA",
       "type": "urltest",
-      "outbounds": ["🇨🇦CA1-hy2", "🇨🇦CA2-hy2", "🇨🇦CA3-hy2", "🇨🇦CA1-hy2-v6", "🇨🇦CA2-hy2-v6", "🇨🇦CA3-hy2-v6"],
+      "outbounds": [
+        "🇨🇦CA1-hy2",
+        "🇨🇦CA2-hy2",
+        "🇨🇦CA3-hy2",
+        "🇨🇦CA1-hy2-v6",
+        "🇨🇦CA2-hy2-v6",
+        "🇨🇦CA3-hy2-v6"
+      ],
       "url": "https://clients1.google.com/generate_204",
-      "interval": "30m",
-      "tolerance": 100,
-      "idle_timeout": "30m0s",
+      "interval": "15m",
+      "tolerance": 35,
+      "idle_timeout": "15m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🇰🇷SK",
       "type": "urltest",
-      "outbounds": ["🇰🇷SK1-hy2", "🇰🇷SK2-hy2", "🇰🇷SK3-hy2", "🇰🇷SK1-hy2-v6", "🇰🇷SK2-hy2-v6", "🇰🇷SK3-hy2-v6"],
+      "outbounds": [
+        "🇰🇷SK1-hy2",
+        "🇰🇷SK2-hy2",
+        "🇰🇷SK3-hy2",
+        "🇰🇷SK1-hy2-v6",
+        "🇰🇷SK2-hy2-v6",
+        "🇰🇷SK3-hy2-v6"
+      ],
       "url": "https://clients1.google.com/generate_204",
-      "interval": "30m",
-      "tolerance": 100,
-      "idle_timeout": "30m0s",
+      "interval": "15m",
+      "tolerance": 35,
+      "idle_timeout": "15m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🔍Google",
       "type": "selector",
-      "outbounds": ["🇺🇸US", "⚡️Lantency", "🌎Manual-select", "🇯🇵JP", "🇰🇷SK", "🇨🇦CA"],
+      "outbounds": [
+        "🇺🇸US",
+        "⚡️Lantency",
+        "🌎Manual-select",
+        "🇯🇵JP",
+        "🇰🇷SK",
+        "🇨🇦CA"
+      ],
       "default": "🇺🇸US"
     },
     {
       "tag": "🔗Meta",
       "type": "selector",
-      "outbounds": ["🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "outbounds": [
+        "🇰🇷SK",
+        "🇨🇦CA",
+        "🇯🇵JP",
+        "🇺🇸US"
+      ],
       "default": "🇺🇸US"
     },
     {
       "tag": "🎶Spotify",
       "type": "selector",
-      "outbounds": ["direct", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "outbounds": [
+        "direct",
+        "🇰🇷SK",
+        "🇨🇦CA",
+        "🇯🇵JP",
+        "🇺🇸US"
+      ],
       "default": "🇯🇵JP"
     },
     {
       "tag": "⚡️Lantency",
       "type": "urltest",
-      "outbounds": ["🇯🇵JP3-hy2", "🇯🇵JP3-hy2-v6", "🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US1-hy2-v6", "🇨🇦CA3-hy2", "🇨🇦CA3-hy2-v6", "🇰🇷SK3-hy2", "🇰🇷SK3-hy2-v6"],
+      "outbounds": [
+        "🇯🇵JP3-hy2",
+        "🇯🇵JP3-hy2-v6",
+        "🇺🇸US1-hy2-mlb",
+        "🇺🇸US1-hy2",
+        "🇺🇸US1-hy2-v6",
+        "🇨🇦CA3-hy2",
+        "🇨🇦CA3-hy2-v6",
+        "🇰🇷SK3-hy2",
+        "🇰🇷SK3-hy2-v6"
+      ],
       "url": "https://clients1.google.com/generate_204",
-      "interval": "30m",
-      "tolerance": 100,
-      "idle_timeout": "30m0s",
+      "interval": "15m",
+      "tolerance": 35,
+      "idle_timeout": "15m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🕸️final",
       "type": "selector",
-      "outbounds": ["⚡️Lantency", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US", "direct"],
+      "outbounds": [
+        "⚡️Lantency",
+        "🇰🇷SK",
+        "🇨🇦CA",
+        "🇯🇵JP",
+        "🇺🇸US",
+        "direct"
+      ],
       "default": "⚡️Lantency"
     },
     {
       "tag": "GLOBAL",
       "type": "selector",
-      "outbounds": ["⚡️Lantency", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "outbounds": [
+        "⚡️Lantency",
+        "🇰🇷SK",
+        "🇨🇦CA",
+        "🇯🇵JP",
+        "🇺🇸US"
+      ],
       "default": "⚡️Lantency"
     },
     {
