@@ -170,8 +170,7 @@
         "10.7.0.1"
       ],
       "auto_route": true,
-      "strict_route": true,
-      "mtu": 1400
+      "auto_redirect": true
     },
     {
       "tag": "mixed-in",
