@@ -11,8 +11,13 @@
         "type": "hosts",
         "tag": "hosts",
         "predefined": {
-          "dns.alidns.com": ["223.5.5.5","223.6.6.6","2400:3200::1","2400:3200:baba::1"],
-          "dns.google": ["8.8.8.8","8.8.4.4","2001:4860:4860::8888","2001:4860:4860::8844"]
+          "dns.alidns.com": [
+            "223.5.5.5",
+            "223.6.6.6",
+            "2400:3200::1",
+            "2400:3200:baba::1"
+          ],
+          "dns.google": ["8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"]
         }
       },
       {
@@ -35,18 +40,53 @@
         "inet6_range": "fc00::/18"
       }
     ],
-    "rules": [ 
-      { "rule_set": ["adblock","BlockHttpDNS"],"action": "predefined","rcode": "NXDOMAIN" },
-      { "query_type": ["SVCB","HTTPS","PTR"],"action": "predefined","rcode": "NOERROR"}, 
-      { "clash_mode": "Direct","action": "route","server": "ali"},
-      { "clash_mode": "Global","query_type": ["A", "AAAA"],"action": "route","server": "fakeip","rewrite_ttl": 1},
+    "rules": [
       {
-        "rule_set": ["trackerslist","private","fakeipfilter-cn","apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": [
+          "adblock",
+          "BlockHttpDNS"
+        ],
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
+        "query_type": ["SVCB", "HTTPS", "PTR"],
+        "action": "predefined",
+        "rcode": "NOERROR"
+      },
+      {
+        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
         "action": "route",
         "server": "ali"
       },
-      { "rule_set": "fakeipfilter-!cn","action": "route","server": "google"},
-      { "rule_set": "proxy", "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 },
+      {
+        "clash_mode": "Direct",
+        "action": "route",
+        "server": "ali"
+      },
+      {
+        "clash_mode": "Global",
+        "query_type": ["A", "AAAA"],
+        "action": "route",
+        "server": "fakeip",
+        "rewrite_ttl": 1
+      },
+      {
+        "rule_set": ["trackerslist", "private", "fakeipfilter-cn", "apple-cn", "microsoft-cn", "games-cn", "cn"],
+        "action": "route",
+        "server": "ali"
+      },
+      {
+        "rule_set": "fakeipfilter-!cn",
+        "action": "route",
+        "server": "google"
+      },
+      {
+        "rule_set": "proxy",
+        "query_type": ["A", "AAAA"],
+        "server": "fakeip",
+        "rewrite_ttl": 1
+      },
       {
         "query_type": ["A", "AAAA"],
         "action": "evaluate",
@@ -54,13 +94,21 @@
         "client_subnet": "223.5.5.0/24",
         "timeout": "1s"
       },
-      { "match_response": true, "rule_set": "cnip", "server": "ali" },
-      { "query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1 }
+      {
+        "match_response": true,
+        "rule_set": "cnip",
+        "server": "ali"
+      },
+      {
+        "query_type": ["A", "AAAA"],
+        "server": "fakeip",
+        "rewrite_ttl": 1
+      }
     ],
     "final": "google",
     "reverse_mapping": true,
     "timeout": "10s",
-    "cache_capacity": 8192,
+    "cache_capacity": 4096,
     "optimistic": {
       "enabled": true,
       "timeout": "5m0s"
@@ -101,59 +149,83 @@
   ],
   "route": {
     "rules": [
-      { "port": 53, "action": "hijack-dns" },
-      { "network": "icmp", "action": "resolve" },
-      { "ip_cidr": ["0.0.0.0/8"],"action": "reject"},
-      { "ip_cidr": ["10.7.0.1/32"],"action": "route","outbound": "direct"},
+      {
+        "port": 53,
+        "action": "hijack-dns"
+      },
+      {
+        "network": "icmp",
+        "action": "resolve"
+      },
+      {
+        "ip_cidr": [
+          "0.0.0.0/8"
+        ],
+        "action": "reject"
+      },
+      {
+        "ip_cidr": ["10.7.0.1/32"],
+        "action": "route",
+        "outbound": "direct"
+      },
       {
         "type": "logical",
         "mode": "and",
         "rules": [
-          {"ip_version": 6},
-          { "ip_cidr": ["fc00::/18"], "invert": true },
+          {
+            "ip_version": 6
+          },
+          {
+            "ip_cidr": [
+              "fc00::/18"
+            ],
+            "invert": true
+          },
           {
             "default_interface_address": ["2000::/3"],
             "invert": true
           }
         ],
-       "action": "reject",
-       "no_drop": true
+        "action": "reject",
+        "no_drop": true
       },
-      { "network": "icmp", "action": "route", "preferred_by": "bridge", "outbound": "bridge"},
       {
-       "ip_cidr": [ "100.64.0.0/10","fd7a:115c:a1e0::/48"],
-       "action": "route",
-       "outbound": "ts-ep"
-      },
-      { "rule_set": "privateip","action": "route","outbound": "direct"},
-      { "rule_set": ["adblock","BlockHttpDNS"],"action": "reject","no_drop": true},
-      { "port": 993,"rule_set": "cnip","action": "reject"}, 
-      {
-        "inbound": "tun-in",
-        "preferred_by": "bridge",
-        "process_name": ["Motrix", "aria2c"],
+        "network": "icmp",
         "action": "route",
-        "outbound": "bridge"
+        "outbound": "direct"
       },
-      { "domain_suffix": ["googleapis.cn","xn--ngstr-lra8j.com"],"action": "route","outbound": "✈️proxy"},
-      { "rule_set": "cnip","action": "route","preferred_by": "bridge","outbound": "bridge"},
       {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {"domain_suffix": "push.apple.com"},
-          {"rule_set": "telegramip"}
-        ],
-        "invert": true,
-        "action": "sniff",
-        "timeout": "100ms"
+        "ip_cidr": ["100.64.0.0/10", "fd7a:115c:a1e0::/48"],
+        "action": "route",
+        "outbound": "ts-ep"
       },
-      { "protocol": "dns", "action": "hijack-dns" },
-      { "clash_mode": "Global","action": "route","outbound": "✈️proxy"},
-      { "clash_mode": "Direct","action": "route","outbound": "direct"},
-      { "protocol": "ntp","action": "route","outbound": "direct"},
       {
-        "rule_set": ["trackerslist","private","apple-cn","microsoft-cn","games-cn","cn"],
+        "rule_set": "privateip",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": ["adblock", "BlockHttpDNS"],
+        "action": "reject",
+        "no_drop": true
+      },
+      {
+        "port": 993,
+        "rule_set": "cnip",
+        "action": "reject"
+      },
+      {
+        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": ["googleapis.cn", "xn--ngstr-lra8j.com"],
+        "action": "route",
+        "outbound": "🔍Google"
+      },
+      {
+        "rule_set": "cnip",
         "action": "route",
         "outbound": "direct"
       },
@@ -161,22 +233,92 @@
         "type": "logical",
         "mode": "or",
         "rules": [
-           { "protocol": ["quic", "stun"] },
-           { "network": "udp", "port": 443 }
+          {
+            "domain_suffix": "push.apple.com"
+          },
+          {
+            "rule_set": "telegramip"
+          }
+        ],
+        "invert": true,
+        "action": "sniff",
+        "timeout": "100ms"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "Global",
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
+      {
+        "clash_mode": "Direct",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "protocol": "ntp",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": ["trackerslist", "private", "apple-cn", "microsoft-cn", "games-cn", "cn"],
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "protocol": [
+              "quic",
+              "stun"
+            ]
+          },
+          {
+            "network": "udp",
+            "port": 443
+          }
         ],
         "action": "reject",
         "no_drop": true
       },
-      { "rule_set": "meta","action": "route","outbound": "🔗Meta"},
-      { "rule_set": "spotify","action": "route","outbound": "🎶Spotify"},
       {
-        "rule_set": ["fakeipfilter-!cn","youtube","netflix","telegramip"],
+        "rule_set": "google",
+        "action": "route",
+        "outbound": "🔍Google"
+      },
+      {
+        "rule_set": "meta",
+        "action": "route",
+        "outbound": "🔗Meta"
+      },
+      {
+        "rule_set": "spotify",
+        "action": "route",
+        "outbound": "🎶Spotify"
+      },
+      {
+        "rule_set": ["fakeipfilter-!cn", "youtube", "netflix", "telegramip"],
         "action": "route",
         "outbound": "✈️proxy"
       },
-      { "rule_set": "proxy","action": "route","outbound": "✈️proxy"},
-      { "action": "resolve"},
-      { "rule_set": ["privateip", "cnip"],"action": "route","outbound": "direct"}
+      {
+        "rule_set": "proxy",
+        "action": "route",
+        "outbound": "✈️proxy"
+      },
+      {
+        "action": "resolve"
+      },
+      {
+        "rule_set": ["privateip", "cnip"],
+        "action": "route",
+        "outbound": "direct"
+      }
     ],
     "auto_detect_interface": true,
     "find_process": true,
@@ -192,20 +334,39 @@
       },
       {
         "type": "remote",
-        "tag": ["fakeipfilter-cn","fakeipfilter-!cn","meta"],
+        "tag": [
+          "fakeipfilter-cn",
+          "fakeipfilter-!cn",
+          "meta",
+          "google"
+        ],
         "url": "https://ghfast.top/https://raw.githubusercontent.com/wuziwei/sing-box-config-template/main/rules/{tag}.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
-        "tag": ["trackerslist","private","privateip","apple-cn","microsoft-cn","games-cn","cn","cnip","proxy","telegramip","youtube","netflix","spotify"],
+        "tag": [
+          "trackerslist",
+          "private",
+          "privateip",
+          "apple-cn",
+          "microsoft-cn",
+          "games-cn",
+          "cn",
+          "cnip",
+          "proxy",
+          "telegramip",
+          "youtube",
+          "netflix",
+          "spotify"
+        ],
         "url": "https://ghfast.top/https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/{tag}.srs",
         "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
         "tag": "adblock",
-        "url": "https://ghfast.top/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblocksingboxlite.srs",
+        "url": "https://ghfast.top/https://github.com/217heidai/adblockfilters/releases/download/rule/adblocksingboxlite.srs",
         "update_interval": "48h0m0s"
       }
     ]
@@ -231,15 +392,29 @@
       "tag": "✈️proxy",
       "type": "selector",
       "outbounds": [
-        "⚡️Latency(🇯🇵/🇰🇷)",
+        "⚡️Lantency",
+        "🌎Manual-select",
+        "🇰🇷SK",
+        "🇨🇦CA",
+        "🇯🇵JP",
+        "🇺🇸US"
+      ],
+      "default": "⚡️Lantency"
+    },
+    {
+      "tag": "🌎Manual-select",
+      "type": "selector",
+      "outbounds": [
         "🇯🇵JP1-hy2",
         "🇯🇵JP2-hy2",
         "🇯🇵JP3-hy2",
+        "🇺🇸US1-hy2-mlb",
         "🇺🇸US1-hy2",
         "🇺🇸US2-hy2",
         "🇺🇸US3-hy2",
         "🇨🇦CA1-hy2",
         "🇨🇦CA2-hy2",
+        "🇨🇦CA3-hy2",
         "🇰🇷SK1-hy2",
         "🇰🇷SK2-hy2",
         "🇰🇷SK3-hy2",
@@ -251,110 +426,92 @@
         "🇺🇸US3-hy2-v6",
         "🇨🇦CA1-hy2-v6",
         "🇨🇦CA2-hy2-v6",
+        "🇨🇦CA3-hy2-v6",
         "🇰🇷SK1-hy2-v6",
         "🇰🇷SK2-hy2-v6",
         "🇰🇷SK3-hy2-v6"
       ],
-      "default": "⚡️Latency(🇯🇵/🇰🇷)"
+      "default": "🇰🇷SK3-hy2"
+    },
+    {
+      "tag": "🇺🇸US",
+      "type": "urltest",
+      "outbounds": ["🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US2-hy2", "🇺🇸US3-hy2", "🇺🇸US1-hy2-v6", "🇺🇸US2-hy2-v6", "🇺🇸US3-hy2-v6"],
+      "url": "https://clients1.google.com/generate_204",
+      "interval": "30m",
+      "tolerance": 100,
+      "idle_timeout": "30m0s",
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇯🇵JP",
+      "type": "urltest",
+      "outbounds": ["🇯🇵JP1-hy2", "🇯🇵JP2-hy2", "🇯🇵JP3-hy2", "🇯🇵JP1-hy2-v6", "🇯🇵JP2-hy2-v6", "🇯🇵JP3-hy2-v6"],
+      "url": "https://clients1.google.com/generate_204",
+      "interval": "30m",
+      "tolerance": 100,
+      "idle_timeout": "30m0s",
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇨🇦CA",
+      "type": "urltest",
+      "outbounds": ["🇨🇦CA1-hy2", "🇨🇦CA2-hy2", "🇨🇦CA3-hy2", "🇨🇦CA1-hy2-v6", "🇨🇦CA2-hy2-v6", "🇨🇦CA3-hy2-v6"],
+      "url": "https://clients1.google.com/generate_204",
+      "interval": "30m",
+      "tolerance": 100,
+      "idle_timeout": "30m0s",
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇰🇷SK",
+      "type": "urltest",
+      "outbounds": ["🇰🇷SK1-hy2", "🇰🇷SK2-hy2", "🇰🇷SK3-hy2", "🇰🇷SK1-hy2-v6", "🇰🇷SK2-hy2-v6", "🇰🇷SK3-hy2-v6"],
+      "url": "https://clients1.google.com/generate_204",
+      "interval": "30m",
+      "tolerance": 100,
+      "idle_timeout": "30m0s",
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🔍Google",
+      "type": "selector",
+      "outbounds": ["🇺🇸US", "⚡️Lantency", "🌎Manual-select", "🇯🇵JP", "🇰🇷SK", "🇨🇦CA"],
+      "default": "🇺🇸US"
     },
     {
       "tag": "🔗Meta",
       "type": "selector",
-      "outbounds": [
-        "🇺🇸US1-hy2",
-        "🇺🇸US2-hy2",
-        "🇺🇸US3-hy2",
-        "🇺🇸US1-hy2-v6",
-        "🇺🇸US2-hy2-v6",
-        "🇺🇸US3-hy2-v6"
-      ],
-      "default":  "🇺🇸US1-hy2"
+      "outbounds": ["🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "default": "🇺🇸US"
     },
     {
       "tag": "🎶Spotify",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇯🇵JP1-hy2",
-        "🇯🇵JP2-hy2",
-        "🇯🇵JP3-hy2",
-        "🇺🇸US1-hy2",
-        "🇺🇸US2-hy2",
-        "🇺🇸US3-hy2",
-        "🇨🇦CA1-hy2",
-        "🇨🇦CA2-hy2",
-        "🇰🇷SK1-hy2",
-        "🇰🇷SK2-hy2",
-        "🇰🇷SK3-hy2",
-        "🇯🇵JP1-hy2-v6",
-        "🇯🇵JP2-hy2-v6",
-        "🇯🇵JP3-hy2-v6",
-        "🇺🇸US1-hy2-v6",
-        "🇺🇸US2-hy2-v6",
-        "🇺🇸US3-hy2-v6",
-        "🇨🇦CA1-hy2-v6",
-        "🇨🇦CA2-hy2-v6",
-        "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6",
-        "🇰🇷SK3-hy2-v6"
-      ],
-      "default": "🇯🇵JP3-hy2"
+      "outbounds": ["direct", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "default": "🇯🇵JP"
     },
     {
-      "tag": "⚡️Latency(🇯🇵/🇰🇷)",
+      "tag": "⚡️Lantency",
       "type": "urltest",
-      "outbounds": [
-        "🇯🇵JP3-hy2",
-        "🇯🇵JP3-hy2-v6",
-        "🇺🇸US1-hy2",
-        "🇺🇸US1-hy2-v6",
-        "🇰🇷SK3-hy2",
-        "🇰🇷SK3-hy2-v6"
-      ],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "10m",
-      "tolerance": 25,
-      "idle_timeout": "20m0s",
+      "outbounds": ["🇯🇵JP3-hy2", "🇯🇵JP3-hy2-v6", "🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US1-hy2-v6", "🇨🇦CA3-hy2", "🇨🇦CA3-hy2-v6", "🇰🇷SK3-hy2", "🇰🇷SK3-hy2-v6"],
+      "url": "https://clients1.google.com/generate_204",
+      "interval": "30m",
+      "tolerance": 100,
+      "idle_timeout": "30m0s",
       "interrupt_exist_connections": false
     },
     {
       "tag": "🕸️final",
       "type": "selector",
-      "outbounds": [
-        "⚡️Latency(🇯🇵/🇰🇷)",
-        "direct"
-      ],
-      "default": "⚡️Latency(🇯🇵/🇰🇷)"
+      "outbounds": ["⚡️Lantency", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US", "direct"],
+      "default": "⚡️Lantency"
     },
     {
       "tag": "GLOBAL",
       "type": "selector",
-      "outbounds": [
-        "⚡️Latency(🇯🇵/🇰🇷)",
-        "🇯🇵JP1-hy2",
-        "🇯🇵JP2-hy2",
-        "🇯🇵JP3-hy2",
-        "🇺🇸US1-hy2",
-        "🇺🇸US2-hy2",
-        "🇺🇸US3-hy2",
-        "🇨🇦CA1-hy2",
-        "🇨🇦CA2-hy2",
-        "🇰🇷SK1-hy2",
-        "🇰🇷SK2-hy2",
-        "🇰🇷SK3-hy2",
-        "🇯🇵JP1-hy2-v6",
-        "🇯🇵JP2-hy2-v6",
-        "🇯🇵JP3-hy2-v6",
-        "🇺🇸US1-hy2-v6",
-        "🇺🇸US2-hy2-v6",
-        "🇺🇸US3-hy2-v6",
-        "🇨🇦CA1-hy2-v6",
-        "🇨🇦CA2-hy2-v6",
-        "🇰🇷SK1-hy2-v6",
-        "🇰🇷SK2-hy2-v6",
-        "🇰🇷SK3-hy2-v6"
-      ],
-      "default": "⚡️Latency(🇯🇵/🇰🇷)"
+      "outbounds": ["⚡️Lantency", "🇰🇷SK", "🇨🇦CA", "🇯🇵JP", "🇺🇸US"],
+      "default": "⚡️Lantency"
     },
     {
       "tag": "direct",
@@ -379,9 +536,7 @@
       "tls": {
         "enabled": true,
         "server_name": "inpout your server domain",
-        "alpn": [
-          "h3"
-        ]
+        "alpn": ["h3"]
       }
     }
   ],
