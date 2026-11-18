@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "use-application-dns.net"
+      ],
+      "domain_suffix": [
+        "mask.icloud.com",
+        "mask-h2.icloud.com",
+        "use-application-dns.net",
+        "_dns.resolver.arpa"
+      ]
+    }
+  ]
+}
