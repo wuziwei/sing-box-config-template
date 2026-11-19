@@ -37,6 +37,8 @@ EXCLUDED_UPSTREAM_GEOSITE_CODES = {
     "TRACKERSLIST",
     "BITTORRENT",
     "TORRENT",
+    "FAKEIPFILTER-CN",
+    "FAKEIPFILTER-!CN",
 }
 
 EXPECTED_GEOSITE_TAGS = [
@@ -52,8 +54,6 @@ EXPECTED_GEOSITE_TAGS = [
     "PROXY",
     "GOOGLE",
     "META",
-    "FAKEIPFILTER-CN",
-    "FAKEIPFILTER-!CN",
     "BLOCKHTTPDNS",
     "WEBRTC-STUN",
     "DOH-CANARY",
@@ -289,25 +289,16 @@ def build_geodata(base_dir: str, offline: bool = False) -> None:
     meta_doms, _ = load_singbox_rule_json(os.path.join(rules_dir, "meta.json"))
     custom_geosite_groups["META"] = list(dict.fromkeys(meta_doms))
 
-    # 4.3 FAKEIPFILTER-CN (read from sibling ../rules/fakeipfilter-cn.json)
-    fcn_doms, _ = load_singbox_rule_json(os.path.join(rules_dir, "fakeipfilter-cn.json"))
-    custom_geosite_groups["FAKEIPFILTER-CN"] = list(dict.fromkeys(fcn_doms))
-
-    # 4.4 FAKEIPFILTER-!CN (read from sibling ../rules/fakeipfilter-!cn.json; strip global.turn.twilio.com)
-    fncn_doms, _ = load_singbox_rule_json(os.path.join(rules_dir, "fakeipfilter-!cn.json"))
-    fncn_doms = [(t, v) for t, v in fncn_doms if v != "global.turn.twilio.com"]
-    custom_geosite_groups["FAKEIPFILTER-!CN"] = list(dict.fromkeys(fncn_doms))
-
-    # 4.5 BLOCKHTTPDNS (domains for GeoSite, 41 CIDRs for GeoIP)
+    # 4.3 BLOCKHTTPDNS (domains for GeoSite, 41 CIDRs for GeoIP)
     bhttp_doms, bhttp_cidrs = load_singbox_rule_json(blockhttpdns_path)
     custom_geosite_groups["BLOCKHTTPDNS"] = list(dict.fromkeys(bhttp_doms))
     custom_geoip_entries["BLOCKHTTPDNS"] = list(dict.fromkeys(bhttp_cidrs))
 
-    # 4.6 WEBRTC-STUN (read from custom/webrtc-stun.json)
+    # 4.4 WEBRTC-STUN (read from custom/webrtc-stun.json)
     stun_doms, _ = load_singbox_rule_json(os.path.join(custom_dir, "webrtc-stun.json"))
     custom_geosite_groups["WEBRTC-STUN"] = list(dict.fromkeys(stun_doms))
 
-    # 4.7 DOH-CANARY (read from custom/doh-canary.json)
+    # 4.5 DOH-CANARY (read from custom/doh-canary.json)
     doh_doms, _ = load_singbox_rule_json(os.path.join(custom_dir, "doh-canary.json"))
     custom_geosite_groups["DOH-CANARY"] = list(dict.fromkeys(doh_doms))
 

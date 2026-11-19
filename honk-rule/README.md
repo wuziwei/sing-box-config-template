@@ -24,7 +24,7 @@
 
 ## 二、规则分类明细（Tag 清单）
 
-### 1. GeoSite 分类（共 31 个唯一分类）
+### 1. GeoSite 分类（共 29 个唯一分类）
 
 | 分类标识 (Tag) | 来源与用途说明 |
 | :--- | :--- |
@@ -41,8 +41,6 @@
 | **`AI`** | 国际主流 AI 服务（OpenAI / Anthropic / Gemini 等） |
 | **`GOOGLE`** *(定制)* | Google 核心服务域名（**已严格剔除 YouTube**，确保 YouTube 优先分流，源自 `../rules/google.json`，767 条目） |
 | **`META`** *(定制)* | Meta / Instagram / WhatsApp / Muse AI / Hatch / OHTTP 网关（源自 `../rules/meta.json`） |
-| **`FAKEIPFILTER-CN`** *(定制)* | 国内直连正则与域名（含 32 条无 lookaround 优化正则，放行微信视频、网易云等） |
-| **`FAKEIPFILTER-!CN`** *(定制)* | 海外直连/测速与时间服务正则与域名（含 28 条无 lookaround 优化正则，已剔除 STUN） |
 | **`BLOCKHTTPDNS`** *(定制)* | 国内各大应用 HttpDNS 劫持解析阻断域名（源自 `custom/blockhttpdns.json`） |
 | **`WEBRTC-STUN`** *(定制)* | 海外 STUN/TURN 域名与正则（`^(?i)stun[0-9]*\.`、Twilio 等，用于精准阻断防真实 IP 泄露） |
 | **`DOH-CANARY`** *(定制)* | Apple iCloud Private Relay 屏蔽与 DoH Canary 域名（强制降级本地 DNS） |
@@ -81,14 +79,14 @@ assets {
 ```dae
 # DNS 层
 qname(geosite: ads, geosite: blockhttpdns, geosite: doh-canary) -> reject
-qname(geosite: private, geosite: cn, geosite: apple-cn, geosite: microsoft-cn, geosite: games-cn, geosite: fakeipfilter-cn) -> alidns
+qname(geosite: private, geosite: cn, geosite: apple-cn, geosite: microsoft-cn, geosite: games-cn) -> alidns
 qname(geosite: webrtc-stun) -> reject
-qname(geosite: youtube, geosite: netflix, geosite: google, geosite: meta, geosite: spotify, geosite: fakeipfilter-!cn, geosite: proxy) -> googledns
+qname(geosite: youtube, geosite: netflix, geosite: google, geosite: meta, geosite: spotify, geosite: proxy) -> googledns
 
 # Routing 层
 dip(geoip: blockhttpdns) -> block(must)
 domain(geosite: ads, geosite: blockhttpdns, geosite: doh-canary) -> block
-domain(geosite: private, geosite: cn, geosite: apple-cn, geosite: microsoft-cn, geosite: games-cn, geosite: fakeipfilter-cn) -> direct(must)
+domain(geosite: private, geosite: cn, geosite: apple-cn, geosite: microsoft-cn, geosite: games-cn) -> direct(must)
 domain(geosite: webrtc-stun) -> block
 domain(geosite: youtube, geosite: netflix) -> proxy
 domain(geosite: google) -> google
