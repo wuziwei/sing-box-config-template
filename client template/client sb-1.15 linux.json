@@ -69,8 +69,8 @@
       },
       {
         "domain_suffix": [
-          "444556.xyz",
-          "firstwall.eu.org"
+          "your-domain.com",
+          "your-ddns.org"
         ],
         "action": "route",
         "server": "ali"
@@ -259,8 +259,8 @@
       },
       {
         "domain_suffix": [
-          "444556.xyz",
-          "firstwall.eu.org"
+          "your-domain.com",
+          "your-ddns.org"
         ],
         "action": "route",
         "outbound": "direct"
@@ -509,7 +509,7 @@
         "🇺🇸US2-hy2-v6",
         "🇺🇸US3-hy2-v6"
       ],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -526,7 +526,7 @@
         "🇯🇵JP2-hy2-v6",
         "🇯🇵JP3-hy2-v6"
       ],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -543,7 +543,7 @@
         "🇨🇦CA2-hy2-v6",
         "🇨🇦CA3-hy2-v6"
       ],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -560,7 +560,7 @@
         "🇰🇷SK2-hy2-v6",
         "🇰🇷SK3-hy2-v6"
       ],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -616,7 +616,7 @@
         "🇰🇷SK3-hy2",
         "🇰🇷SK3-hy2-v6"
       ],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",

@@ -55,7 +55,7 @@
         "rcode": "NOERROR"
       },
       {
-        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
+        "domain_suffix": ["your-domain.com", "your-ddns.org"],
         "action": "route",
         "server": "ali"
       },
@@ -217,7 +217,7 @@
         "action": "reject"
       },
       {
-        "domain_suffix": ["444556.xyz", "firstwall.eu.org"],
+        "domain_suffix": ["your-domain.com", "your-ddns.org"],
         "action": "route",
         "outbound": "direct"
       },
@@ -439,7 +439,7 @@
       "tag": "🇺🇸US",
       "type": "urltest",
       "outbounds": ["🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US2-hy2", "🇺🇸US3-hy2", "🇺🇸US1-hy2-v6", "🇺🇸US2-hy2-v6", "🇺🇸US3-hy2-v6"],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -449,7 +449,7 @@
       "tag": "🇯🇵JP",
       "type": "urltest",
       "outbounds": ["🇯🇵JP1-hy2", "🇯🇵JP2-hy2", "🇯🇵JP3-hy2", "🇯🇵JP1-hy2-v6", "🇯🇵JP2-hy2-v6", "🇯🇵JP3-hy2-v6"],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -459,7 +459,7 @@
       "tag": "🇨🇦CA",
       "type": "urltest",
       "outbounds": ["🇨🇦CA1-hy2", "🇨🇦CA2-hy2", "🇨🇦CA3-hy2", "🇨🇦CA1-hy2-v6", "🇨🇦CA2-hy2-v6", "🇨🇦CA3-hy2-v6"],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -469,7 +469,7 @@
       "tag": "🇰🇷SK",
       "type": "urltest",
       "outbounds": ["🇰🇷SK1-hy2", "🇰🇷SK2-hy2", "🇰🇷SK3-hy2", "🇰🇷SK1-hy2-v6", "🇰🇷SK2-hy2-v6", "🇰🇷SK3-hy2-v6"],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
@@ -497,7 +497,7 @@
       "tag": "⚡️Lantency",
       "type": "urltest",
       "outbounds": ["🇯🇵JP3-hy2", "🇯🇵JP3-hy2-v6", "🇺🇸US1-hy2-mlb", "🇺🇸US1-hy2", "🇺🇸US1-hy2-v6", "🇨🇦CA3-hy2", "🇨🇦CA3-hy2-v6", "🇰🇷SK3-hy2", "🇰🇷SK3-hy2-v6"],
-      "url": "https://clients1.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "interval": "15m",
       "tolerance": 35,
       "idle_timeout": "15m0s",
